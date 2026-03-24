@@ -27,6 +27,7 @@
 		A1001301 /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001300 /* AlertsView.swift */; };
 		A1001401 /* AlertBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001400 /* AlertBannerView.swift */; };
 		A1001501 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001500 /* SettingsView.swift */; };
+		A1001601 /* DefaultLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001600 /* DefaultLocationPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		A1001300 /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		A1001400 /* AlertBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerView.swift; sourceTree = "<group>"; };
 		A1001500 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1001600 /* DefaultLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLocationPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 				A1001300 /* AlertsView.swift */,
 				A1001400 /* AlertBannerView.swift */,
 				A1001500 /* SettingsView.swift */,
+				A1001600 /* DefaultLocationPicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				A1001301 /* AlertsView.swift in Sources */,
 				A1001401 /* AlertBannerView.swift in Sources */,
 				A1001501 /* SettingsView.swift in Sources */,
+				A1001601 /* DefaultLocationPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
