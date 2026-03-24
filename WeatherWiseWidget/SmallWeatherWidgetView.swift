@@ -31,9 +31,9 @@ struct SmallWeatherWidgetView: View {
                 Spacer()
                 Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 14))
+                    .font(.system(size: 16))
                 Text(snapshot.cityName)
-                    .font(.caption)
+                    .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -42,14 +42,14 @@ struct SmallWeatherWidgetView: View {
             Spacer()
 
             // Large temperature, left-aligned
-            Text("\(temp)°")
-                .font(.system(size: 48, weight: .bold, design: .rounded))
+            Text("\(temp)")
+                .font(.system(size: 64, weight: .thin))
                 .foregroundStyle(.white)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.6)
 
             // Hi/Lo at the bottom
             Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.8))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
