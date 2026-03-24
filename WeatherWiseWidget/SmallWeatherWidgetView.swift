@@ -26,9 +26,8 @@ struct SmallWeatherWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Top row: condition icon + city name, right-aligned
+            // Top row: condition icon + city name, left-aligned
             HStack(spacing: 4) {
-                Spacer()
                 Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
                     .symbolRenderingMode(.multicolor)
                     .font(.system(size: 16))
@@ -37,7 +36,6 @@ struct SmallWeatherWidgetView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .lineLimit(2)
-                    .multilineTextAlignment(.trailing)
             }
 
             Spacer()

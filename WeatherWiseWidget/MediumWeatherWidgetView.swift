@@ -29,7 +29,6 @@ struct MediumWeatherWidgetView: View {
             // Left: current conditions (matching small widget layout)
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 4) {
-                    Spacer()
                     Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 16))
@@ -38,7 +37,6 @@ struct MediumWeatherWidgetView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
                         .lineLimit(2)
-                        .multilineTextAlignment(.trailing)
                 }
 
                 Spacer()
