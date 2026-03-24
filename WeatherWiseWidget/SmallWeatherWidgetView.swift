@@ -44,7 +44,7 @@ struct SmallWeatherWidgetView: View {
 
             // Large temperature, left-aligned
             Text("\(temp)")
-                .font(.system(size: 64, weight: .bold))
+                .font(.system(size: 64, weight: .heavy))
                 .foregroundStyle(.white)
                 .minimumScaleFactor(0.6)
 
