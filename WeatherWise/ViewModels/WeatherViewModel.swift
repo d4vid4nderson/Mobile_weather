@@ -63,7 +63,8 @@ final class WeatherViewModel: ObservableObject {
         guard let weather = currentWeather,
               let sunrise = weather.sys.sunrise,
               let sunset = weather.sys.sunset else { return true }
-        return Date.isDaytime(currentDt: weather.dt, sunrise: sunrise, sunset: sunset)
+        let currentTimestamp = Int(Date().timeIntervalSince1970)
+        return Date.isDaytime(currentDt: currentTimestamp, sunrise: sunrise, sunset: sunset)
     }
 
     var backgroundGradient: LinearGradient {

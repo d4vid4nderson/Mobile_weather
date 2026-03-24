@@ -28,7 +28,7 @@ actor WeatherService {
 
     // Replace with your OpenWeatherMap API key
     // Get a free key at https://openweathermap.org/api
-    static let apiKey = "YOUR_API_KEY"
+    static let apiKey = "39029bf0c1f9bc244377f3e8c16de220"
 
     private let baseURL = "https://api.openweathermap.org/data/2.5"
     private let airQualityBaseURL = "https://api.openweathermap.org/data/2.5/air_pollution"
