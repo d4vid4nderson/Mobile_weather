@@ -38,6 +38,7 @@
 		A1001E01 /* WindArrowOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001E00 /* WindArrowOverlayView.swift */; };
 		A1001F01 /* MoonPhaseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001F00 /* MoonPhaseCalculator.swift */; };
 		A1002001 /* MoonArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002000 /* MoonArcView.swift */; };
+		A1002101 /* RadarDataGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002100 /* RadarDataGraphView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		A1001E00 /* WindArrowOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindArrowOverlayView.swift; sourceTree = "<group>"; };
 		A1001F00 /* MoonPhaseCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPhaseCalculator.swift; sourceTree = "<group>"; };
 		A1002000 /* MoonArcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonArcView.swift; sourceTree = "<group>"; };
+		A1002100 /* RadarDataGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarDataGraphView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 				A1001D00 /* WindGustView.swift */,
 				A1001E00 /* WindArrowOverlayView.swift */,
 				A1002000 /* MoonArcView.swift */,
+				A1002100 /* RadarDataGraphView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				A1001E01 /* WindArrowOverlayView.swift in Sources */,
 				A1001F01 /* MoonPhaseCalculator.swift in Sources */,
 				A1002001 /* MoonArcView.swift in Sources */,
+				A1002101 /* RadarDataGraphView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

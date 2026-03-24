@@ -394,6 +394,7 @@ struct RadarView: View {
     @State private var overlayOpacity: Double = 0.6
     @State private var showLegend: Bool = true
     @State private var showLayerPicker: Bool = false
+    @State private var showDataGraph: Bool = false
     @State private var mapView: MKMapView?
     @State private var stormAnnotations: [StormAnnotation] = []
 
@@ -452,6 +453,18 @@ struct RadarView: View {
                     // Opacity slider
                     opacitySlider
                         .padding(.horizontal)
+
+                    // Data graph
+                    if showDataGraph, let forecast = viewModel.forecast {
+                        RadarDataGraphView(
+                            forecastItems: forecast.list,
+                            selectedLayer: selectedLayer,
+                            timezoneOffset: forecast.city.timezone ?? 0,
+                            convertTemp: viewModel.convertTemp
+                        )
+                        .padding(.horizontal)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
 
                     // Legend
                     if showLegend {
@@ -548,6 +561,19 @@ struct RadarView: View {
             )
 
             Spacer()
+
+            // Data graph toggle
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    showDataGraph.toggle()
+                }
+            } label: {
+                Image(systemName: showDataGraph ? "chart.bar.fill" : "chart.bar")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(10)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
 
             // Reset map
             Button {
