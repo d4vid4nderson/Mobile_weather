@@ -64,12 +64,16 @@ struct ContentView: View {
         }
         .tint(.white)
         .overlay(alignment: .topTrailing) {
-            searchButton
+            if selectedTab == 0 {
+                searchButton
+            }
         }
         .overlay(alignment: .topLeading) {
-            HStack(spacing: 8) {
-                locationButton
-                wiseCountyButton
+            if selectedTab == 0 {
+                HStack(spacing: 8) {
+                    locationButton
+                    wiseCountyButton
+                }
             }
         }
     }
