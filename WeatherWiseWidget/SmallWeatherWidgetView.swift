@@ -36,7 +36,8 @@ struct SmallWeatherWidgetView: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.trailing)
             }
 
             Spacer()

@@ -26,25 +26,27 @@ struct MediumWeatherWidgetView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            // Left: current conditions
-            VStack(alignment: .leading, spacing: 4) {
-                Text(snapshot.cityName)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
+            // Left: current conditions (matching small widget layout)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 4) {
+                    Spacer()
+                    Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 16))
+                    Text(snapshot.cityName)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.trailing)
+                }
 
                 Spacer()
 
-                Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
-                    .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 32))
-
-                Spacer()
-
-                Text("\(temp)\(unitSymbol)")
+                Text("\(temp)")
                     .font(.system(size: 40, weight: .bold))
                     .foregroundStyle(.white)
+                    .minimumScaleFactor(0.6)
 
                 Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
                     .font(.caption2)

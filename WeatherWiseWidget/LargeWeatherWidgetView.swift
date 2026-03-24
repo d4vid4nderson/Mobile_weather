@@ -37,36 +37,28 @@ struct LargeWeatherWidgetView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            // Top: current conditions
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(snapshot.cityName)
-                        .font(.headline)
-                        .foregroundStyle(.white)
-
-                    Text(snapshot.conditionDescription)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.8))
-                }
-
+            // Top: current conditions (matching small widget layout)
+            HStack(spacing: 4) {
                 Spacer()
-
                 Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 36))
-            }
-
-            HStack(alignment: .firstTextBaseline) {
-                Text("\(temp)\(unitSymbol)")
-                    .font(.system(size: 52, weight: .bold))
+                    .font(.system(size: 20))
+                Text(snapshot.cityName)
+                    .font(.headline)
+                    .fontWeight(.semibold)
                     .foregroundStyle(.white)
-
-                Spacer()
-
-                Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.8))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.trailing)
             }
+
+            Text("\(temp)")
+                .font(.system(size: 52, weight: .bold))
+                .foregroundStyle(.white)
+                .minimumScaleFactor(0.6)
+
+            Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.8))
 
             Divider()
                 .overlay(.white.opacity(0.3))
