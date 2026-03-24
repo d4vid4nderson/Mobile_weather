@@ -19,7 +19,7 @@ struct ContentView: View {
                 mainContent
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(viewModel.appearance.colorScheme)
         .onAppear {
             viewModel.fetchWeather()
         }

@@ -141,7 +141,7 @@ struct ForecastView: View {
                 .symbolRenderingMode(.multicolor)
                 .frame(height: 30)
 
-            Text("\(Int(item.main.temp.rounded()))°")
+            Text("\(Int(viewModel.convertTemp(item.main.temp).rounded()))°")
                 .font(.headline)
                 .foregroundStyle(.white)
 
@@ -210,7 +210,7 @@ struct ForecastView: View {
             Spacer()
 
             HStack(spacing: 8) {
-                Text("\(Int(day.lowTemp.rounded()))°")
+                Text("\(Int(viewModel.convertTemp(day.lowTemp).rounded()))°")
                     .font(.body)
                     .foregroundStyle(.white.opacity(0.5))
                     .frame(width: 35, alignment: .trailing)
@@ -218,7 +218,7 @@ struct ForecastView: View {
                 temperatureBar(low: day.lowTemp, high: day.highTemp)
                     .frame(width: 60, height: 4)
 
-                Text("\(Int(day.highTemp.rounded()))°")
+                Text("\(Int(viewModel.convertTemp(day.highTemp).rounded()))°")
                     .font(.body)
                     .foregroundStyle(.white)
                     .frame(width: 35, alignment: .leading)

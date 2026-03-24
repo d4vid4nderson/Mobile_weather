@@ -3,6 +3,45 @@ import SwiftUI
 import Combine
 import CoreLocation
 
+// MARK: - User Settings Enums
+
+enum TemperatureUnit: String, CaseIterable {
+    case fahrenheit = "Fahrenheit"
+    case celsius = "Celsius"
+
+    var symbol: String {
+        switch self {
+        case .fahrenheit: return "°F"
+        case .celsius: return "°C"
+        }
+    }
+}
+
+enum WindSpeedUnit: String, CaseIterable {
+    case mph = "mph"
+    case kmh = "km/h"
+    case ms = "m/s"
+}
+
+enum AppAppearance: String, CaseIterable {
+    case system = "System"
+    case light = "Light"
+    case dark = "Dark"
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
+enum AutoRefresh: String, CaseIterable {
+    case onLaunch = "On Launch"
+    case manual = "Manual"
+}
+
 @MainActor
 final class WeatherViewModel: ObservableObject {
     // MARK: - Published Properties
@@ -17,6 +56,29 @@ final class WeatherViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var recentSearches: [String] = []
 
+    // MARK: - User Settings
+    @Published var temperatureUnit: TemperatureUnit {
+        didSet { UserDefaults.standard.set(temperatureUnit.rawValue, forKey: "temperatureUnit") }
+    }
+    @Published var windSpeedUnit: WindSpeedUnit {
+        didSet { UserDefaults.standard.set(windSpeedUnit.rawValue, forKey: "windSpeedUnit") }
+    }
+    @Published var appearance: AppAppearance {
+        didSet { UserDefaults.standard.set(appearance.rawValue, forKey: "appearance") }
+    }
+    @Published var autoRefresh: AutoRefresh {
+        didSet { UserDefaults.standard.set(autoRefresh.rawValue, forKey: "autoRefresh") }
+    }
+    @Published var defaultLocationName: String {
+        didSet { UserDefaults.standard.set(defaultLocationName, forKey: "defaultLocationName") }
+    }
+    @Published var defaultLocationLat: Double {
+        didSet { UserDefaults.standard.set(defaultLocationLat, forKey: "defaultLocationLat") }
+    }
+    @Published var defaultLocationLon: Double {
+        didSet { UserDefaults.standard.set(defaultLocationLon, forKey: "defaultLocationLon") }
+    }
+
     // MARK: - Constants
     // Wise County, Texas (Decatur area)
     static let wiseCountyLat = 33.2343
@@ -30,24 +92,41 @@ final class WeatherViewModel: ObservableObject {
 
     // MARK: - Computed Properties
 
+    // MARK: - Unit Conversion Helpers
+
+    func convertTemp(_ fahrenheit: Double) -> Double {
+        switch temperatureUnit {
+        case .fahrenheit: return fahrenheit
+        case .celsius: return (fahrenheit - 32) * 5.0 / 9.0
+        }
+    }
+
+    private func convertWindSpeed(_ mph: Double) -> Double {
+        switch windSpeedUnit {
+        case .mph: return mph
+        case .kmh: return mph * 1.60934
+        case .ms: return mph * 0.44704
+        }
+    }
+
     var temperatureString: String {
         guard let temp = currentWeather?.main.temp else { return "--" }
-        return "\(Int(temp.rounded()))°F"
+        return "\(Int(convertTemp(temp).rounded()))\(temperatureUnit.symbol)"
     }
 
     var feelsLikeString: String {
         guard let temp = currentWeather?.main.feelsLike else { return "--°" }
-        return "\(Int(temp.rounded()))°F"
+        return "\(Int(convertTemp(temp).rounded()))\(temperatureUnit.symbol)"
     }
 
     var highTempString: String {
         guard let temp = currentWeather?.main.tempMax else { return "--°" }
-        return "H:\(Int(temp.rounded()))°"
+        return "H:\(Int(convertTemp(temp).rounded()))°"
     }
 
     var lowTempString: String {
         guard let temp = currentWeather?.main.tempMin else { return "--°" }
-        return "L:\(Int(temp.rounded()))°"
+        return "L:\(Int(convertTemp(temp).rounded()))°"
     }
 
     var conditionDescription: String {
@@ -80,8 +159,8 @@ final class WeatherViewModel: ObservableObject {
     }
 
     var windSpeedString: String {
-        guard let speed = currentWeather?.wind.speed else { return "-- mph" }
-        return String(format: "%.1f mph", speed)
+        guard let speed = currentWeather?.wind.speed else { return "-- \(windSpeedUnit.rawValue)" }
+        return String(format: "%.1f %@", convertWindSpeed(speed), windSpeedUnit.rawValue)
     }
 
     var pressureString: String {
@@ -199,6 +278,23 @@ final class WeatherViewModel: ObservableObject {
     // MARK: - Init
 
     init() {
+        // Load saved settings
+        let tempRaw = UserDefaults.standard.string(forKey: "temperatureUnit") ?? TemperatureUnit.fahrenheit.rawValue
+        self.temperatureUnit = TemperatureUnit(rawValue: tempRaw) ?? .fahrenheit
+
+        let windRaw = UserDefaults.standard.string(forKey: "windSpeedUnit") ?? WindSpeedUnit.mph.rawValue
+        self.windSpeedUnit = WindSpeedUnit(rawValue: windRaw) ?? .mph
+
+        let appearanceRaw = UserDefaults.standard.string(forKey: "appearance") ?? AppAppearance.dark.rawValue
+        self.appearance = AppAppearance(rawValue: appearanceRaw) ?? .dark
+
+        let refreshRaw = UserDefaults.standard.string(forKey: "autoRefresh") ?? AutoRefresh.onLaunch.rawValue
+        self.autoRefresh = AutoRefresh(rawValue: refreshRaw) ?? .onLaunch
+
+        self.defaultLocationName = UserDefaults.standard.string(forKey: "defaultLocationName") ?? "Wise County, TX"
+        self.defaultLocationLat = UserDefaults.standard.object(forKey: "defaultLocationLat") as? Double ?? Self.wiseCountyLat
+        self.defaultLocationLon = UserDefaults.standard.object(forKey: "defaultLocationLon") as? Double ?? Self.wiseCountyLon
+
         loadRecentSearches()
         observeLocation()
     }
@@ -212,15 +308,15 @@ final class WeatherViewModel: ObservableObject {
             }
         } else if locationManager.authorizationStatus == .denied ||
                   locationManager.authorizationStatus == .restricted {
-            // Fall back to Wise County if location not available
+            // Fall back to saved default location
             Task {
-                await fetchWeather(lat: Self.wiseCountyLat, lon: Self.wiseCountyLon)
+                await fetchWeather(lat: defaultLocationLat, lon: defaultLocationLon)
             }
         } else {
             locationManager.requestAuthorization()
-            // Also load Wise County as default while waiting for location
+            // Load default location while waiting for location
             Task {
-                await fetchWeather(lat: Self.wiseCountyLat, lon: Self.wiseCountyLon)
+                await fetchWeather(lat: defaultLocationLat, lon: defaultLocationLon)
             }
         }
     }
@@ -292,7 +388,23 @@ final class WeatherViewModel: ObservableObject {
 
     func loadWiseCounty() {
         Task {
-            await fetchWeather(lat: Self.wiseCountyLat, lon: Self.wiseCountyLon)
+            await fetchWeather(lat: defaultLocationLat, lon: defaultLocationLon)
+        }
+    }
+
+    func setDefaultLocation(name: String, lat: Double, lon: Double) {
+        defaultLocationName = name
+        defaultLocationLat = lat
+        defaultLocationLon = lon
+    }
+
+    func setCurrentLocationAsDefault() {
+        if let weather = currentWeather {
+            setDefaultLocation(
+                name: "\(weather.name), \(weather.sys.country ?? "")",
+                lat: weather.coord.lat,
+                lon: weather.coord.lon
+            )
         }
     }
 
