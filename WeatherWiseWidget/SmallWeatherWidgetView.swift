@@ -25,30 +25,34 @@ struct SmallWeatherWidgetView: View {
     }
 
     var body: some View {
-        VStack(spacing: 6) {
-            Text(snapshot.cityName)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundStyle(.white)
-                .lineLimit(1)
+        VStack(alignment: .leading, spacing: 0) {
+            // Top row: condition icon + city name, right-aligned
+            HStack(spacing: 4) {
+                Spacer()
+                Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
+                    .symbolRenderingMode(.multicolor)
+                    .font(.system(size: 14))
+                Text(snapshot.cityName)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+            }
 
             Spacer()
 
-            Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
-                .symbolRenderingMode(.multicolor)
-                .font(.system(size: 36))
-
-            Spacer()
-
-            Text("\(temp)\(unitSymbol)")
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+            // Large temperature, left-aligned
+            Text("\(temp)°")
+                .font(.system(size: 48, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
+                .minimumScaleFactor(0.7)
 
+            // Hi/Lo at the bottom
             Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.8))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .containerBackground(for: .widget) {
             weatherGradient(for: snapshot.conditionId, icon: snapshot.conditionIcon)
         }
