@@ -2,30 +2,103 @@ import SwiftUI
 
 struct ForecastView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
+    @State private var selectedDayRange: ForecastRange = .fiveDay
+
+    enum ForecastRange: String, CaseIterable {
+        case fiveDay = "5-Day"
+        case tenDay = "10-Day"
+    }
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 60)
-
-            Text(viewModel.cityName)
-                .font(.system(size: 28, weight: .medium, design: .rounded))
-                .foregroundStyle(.white)
-                .padding(.bottom, 4)
-
-            Text("Forecast")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.7))
-                .padding(.bottom, 24)
-
             hourlySection
                 .padding(.bottom, 24)
 
-            dailySection
+            forecastHeader
                 .padding(.horizontal, 20)
-                .padding(.bottom, 40)
+                .padding(.bottom, 12)
+
+            if selectedDayRange == .fiveDay {
+                dailySection
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
+            } else {
+                comingSoonView
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
+            }
         }
-        .padding(.top, 20)
+    }
+
+    // MARK: - Forecast Header with Dropdown
+
+    private var forecastHeader: some View {
+        HStack {
+            Label("FORECAST", systemImage: "calendar")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white.opacity(0.6))
+
+            Spacer()
+
+            Menu {
+                ForEach(ForecastRange.allCases, id: \.self) { range in
+                    Button {
+                        withAnimation {
+                            selectedDayRange = range
+                        }
+                    } label: {
+                        HStack {
+                            Text(range.rawValue)
+                            if range == selectedDayRange {
+                                Image(systemName: "checkmark")
+                            }
+                            if range == .tenDay {
+                                Text("Coming Soon")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(selectedDayRange.rawValue)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10, weight: .bold))
+                }
+                .foregroundStyle(.white.opacity(0.8))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(.ultraThinMaterial, in: Capsule())
+            }
+        }
+    }
+
+    // MARK: - Coming Soon View
+
+    private var comingSoonView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "calendar.badge.clock")
+                .font(.system(size: 40))
+                .foregroundStyle(.white.opacity(0.4))
+
+            Text("10-Day Forecast")
+                .font(.headline)
+                .foregroundStyle(.white)
+
+            Text("Coming Soon")
+                .font(.title2.bold())
+                .foregroundStyle(.white.opacity(0.8))
+
+            Text("A 10-day forecast requires a paid API.\nStay tuned for a future update!")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.5))
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
+        .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
     }
 
     // MARK: - Hourly Forecast
@@ -88,25 +161,18 @@ struct ForecastView: View {
     // MARK: - Daily Forecast
 
     private var dailySection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("5-DAY FORECAST", systemImage: "calendar")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(.white.opacity(0.6))
+        VStack(spacing: 0) {
+            ForEach(Array(viewModel.dailyForecast.enumerated()), id: \.element.id) { index, day in
+                dailyRow(day)
 
-            VStack(spacing: 0) {
-                ForEach(Array(viewModel.dailyForecast.enumerated()), id: \.element.id) { index, day in
-                    dailyRow(day)
-
-                    if index < viewModel.dailyForecast.count - 1 {
-                        Divider()
-                            .overlay(Color.white.opacity(0.15))
-                    }
+                if index < viewModel.dailyForecast.count - 1 {
+                    Divider()
+                        .overlay(Color.white.opacity(0.15))
                 }
             }
-            .padding(16)
-            .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
         }
+        .padding(16)
+        .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
     }
 
     private func dailyRow(_ day: DailyForecast) -> some View {

@@ -5,10 +5,8 @@ struct CurrentWeatherView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 60)
-
             headerSection
+                .padding(.top, 60)
                 .padding(.bottom, 8)
 
             temperatureSection

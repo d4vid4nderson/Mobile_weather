@@ -4,7 +4,6 @@ struct ContentView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
     @State private var selectedTab = 0
     @State private var showSearch = false
-    @State private var showAlerts = false
 
     var body: some View {
         ZStack {
@@ -28,45 +27,44 @@ struct ContentView: View {
             SearchView()
                 .environmentObject(viewModel)
         }
-        .sheet(isPresented: $showAlerts) {
-            NavigationStack {
-                AlertsView()
-                    .environmentObject(viewModel)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") {
-                                showAlerts = false
-                            }
-                            .foregroundStyle(.white)
-                        }
-                    }
-            }
-        }
     }
 
     // MARK: - Main Content
 
     private var mainContent: some View {
         TabView(selection: $selectedTab) {
-            currentWeatherTab
+            weatherTab
+                .tabItem {
+                    Image(systemName: "cloud.sun.fill")
+                    Text("Weather")
+                }
                 .tag(0)
 
-            forecastTab
+            radarTab
+                .tabItem {
+                    Image(systemName: "map.fill")
+                    Text("Radar")
+                }
                 .tag(1)
 
-            radarTab
+            alertsTab
+                .tabItem {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                    Text("Alerts")
+                }
                 .tag(2)
 
-            alertsTab
+            SettingsView()
+                .environmentObject(viewModel)
+                .tabItem {
+                    Image(systemName: "gearshape.fill")
+                    Text("Settings")
+                }
                 .tag(3)
         }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
+        .tint(.white)
         .overlay(alignment: .topTrailing) {
-            HStack(spacing: 8) {
-                alertButton
-                searchButton
-            }
+            searchButton
         }
         .overlay(alignment: .topLeading) {
             HStack(spacing: 8) {
@@ -76,19 +74,21 @@ struct ContentView: View {
         }
     }
 
-    private var currentWeatherTab: some View {
+    // MARK: - Weather Tab (Current + Forecast combined)
+
+    private var weatherTab: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 0) {
-                // Alert banner at top if alerts are active
                 if !viewModel.alerts.isEmpty {
-                    AlertBannerView(showAlerts: $showAlerts)
-                        .environmentObject(viewModel)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 50)
+                    alertBanner
                 }
 
                 CurrentWeatherView()
                     .environmentObject(viewModel)
+
+                ForecastView()
+                    .environmentObject(viewModel)
+                    .padding(.top, 8)
             }
         }
         .refreshable {
@@ -96,20 +96,21 @@ struct ContentView: View {
         }
     }
 
-    private var forecastTab: some View {
-        ScrollView(showsIndicators: false) {
-            ForecastView()
-                .environmentObject(viewModel)
-        }
-        .refreshable {
-            await viewModel.refresh()
-        }
+    private var alertBanner: some View {
+        AlertBannerView(showAlerts: .constant(false))
+            .environmentObject(viewModel)
+            .padding(.horizontal, 20)
+            .padding(.top, 50)
     }
+
+    // MARK: - Radar Tab
 
     private var radarTab: some View {
         RadarView()
             .environmentObject(viewModel)
     }
+
+    // MARK: - Alerts Tab
 
     private var alertsTab: some View {
         AlertsView()
@@ -130,31 +131,6 @@ struct ContentView: View {
                 .background(.ultraThinMaterial, in: Circle())
         }
         .padding(.trailing, 20)
-        .padding(.top, 8)
-    }
-
-    private var alertButton: some View {
-        Button {
-            showAlerts = true
-        } label: {
-            ZStack(alignment: .topTrailing) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(viewModel.alerts.isEmpty ? .white : .orange)
-                    .padding(12)
-                    .background(.ultraThinMaterial, in: Circle())
-
-                if !viewModel.alerts.isEmpty {
-                    Text("\(viewModel.alerts.count)")
-                        .font(.caption2.bold())
-                        .foregroundStyle(.white)
-                        .frame(width: 18, height: 18)
-                        .background(Color.red, in: Circle())
-                        .offset(x: 4, y: -4)
-                }
-            }
-        }
         .padding(.top, 8)
     }
 

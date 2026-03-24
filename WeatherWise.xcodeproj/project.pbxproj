@@ -26,6 +26,7 @@
 		A1001201 /* RadarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001200 /* RadarView.swift */; };
 		A1001301 /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001300 /* AlertsView.swift */; };
 		A1001401 /* AlertBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001400 /* AlertBannerView.swift */; };
+		A1001501 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001500 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		A1001200 /* RadarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarView.swift; sourceTree = "<group>"; };
 		A1001300 /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		A1001400 /* AlertBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerView.swift; sourceTree = "<group>"; };
+		A1001500 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 				A1001200 /* RadarView.swift */,
 				A1001300 /* AlertsView.swift */,
 				A1001400 /* AlertBannerView.swift */,
+				A1001500 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				A1001201 /* RadarView.swift in Sources */,
 				A1001301 /* AlertsView.swift in Sources */,
 				A1001401 /* AlertBannerView.swift in Sources */,
+				A1001501 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
