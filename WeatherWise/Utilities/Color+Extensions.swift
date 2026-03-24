@@ -67,11 +67,11 @@ extension Color {
             : UIColor(white: 1.0, alpha: 1.0)
     })
 
-    /// Secondary text on gradient: muted white in dark, semi-transparent dark in light
+    /// Secondary text on gradient: legible on both dark and light gradients
     static let onGradientSecondary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.75, alpha: 1.0)
-            : UIColor(white: 0.92, alpha: 1.0)
+            ? UIColor(white: 0.88, alpha: 1.0)
+            : UIColor(white: 1.0, alpha: 0.80)
     })
 
     /// Card overlay on gradient: more opaque in dark for separation, lighter in light
