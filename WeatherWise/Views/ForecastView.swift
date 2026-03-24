@@ -129,7 +129,7 @@ struct ForecastView: View {
                             .foregroundStyle(Color.onGradientSecondary)
                     }
                     HStack(spacing: 4) {
-                        Circle().fill(Color.green).frame(width: 6, height: 6)
+                        Circle().fill(Color.accentActual).frame(width: 6, height: 6)
                         Text("Actual")
                             .font(.system(size: 9))
                             .foregroundStyle(Color.onGradientSecondary)
@@ -169,7 +169,7 @@ struct ForecastView: View {
                 Text("Now")
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.yellow)
+                    .foregroundStyle(Color.accentNow)
             } else {
                 Text(item.timestamp.asDate.formattedHour(timezoneOffset: timezone))
                     .font(.caption)
@@ -188,7 +188,7 @@ struct ForecastView: View {
             Text("\(Int(viewModel.convertTemp(item.forecastTemp).rounded()))°")
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(item.isNow ? Color.yellow : Color.onGradientPrimary)
+                .foregroundStyle(item.isNow ? Color.accentNow : Color.onGradientPrimary)
 
             // Actual temp (shown for past items and now)
             if let actual = item.actualTemp {
@@ -198,12 +198,12 @@ struct ForecastView: View {
                     Text("\(Int(viewModel.convertTemp(actual).rounded()))°")
                         .font(.caption2)
                         .fontWeight(.medium)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Color.accentActual)
 
                     if !item.isNow && diffRounded != 0 {
                         Text(diffRounded > 0 ? "+\(diffRounded)°" : "\(diffRounded)°")
                             .font(.system(size: 9, weight: .medium))
-                            .foregroundStyle(diffRounded > 0 ? .orange : .cyan)
+                            .foregroundStyle(diffRounded > 0 ? Color.accentNow : Color.accentRain)
                     }
                 }
             } else {
@@ -225,7 +225,7 @@ struct ForecastView: View {
                     Text("\(Int(pop * 100))%")
                         .font(.system(size: 9))
                 }
-                .foregroundStyle(.cyan)
+                .foregroundStyle(Color.accentRain)
             }
         }
         .frame(width: 56)
@@ -279,7 +279,7 @@ struct ForecastView: View {
                     Text("\(Int(day.pop * 100))%")
                         .font(.caption)
                 }
-                .foregroundStyle(.cyan)
+                .foregroundStyle(Color.accentRain)
                 .frame(width: 50)
             } else {
                 Spacer()

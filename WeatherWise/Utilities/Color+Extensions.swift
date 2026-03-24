@@ -58,35 +58,54 @@ extension Color {
     })
 
     // MARK: - On-Gradient Colors (Weather Tab)
-    // Light mode: white text on bright gradients, frosted-glass cards
-    // Dark mode: crisp white text on deep gradients, dark glass cards
+    // Light mode: dark text on frosted white cards for contrast
+    // Dark mode: light text on dark glass cards
 
     /// Primary text on gradient
     static let onGradientPrimary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(white: 0.97, alpha: 1.0)
-            : UIColor(white: 1.0, alpha: 1.0)
+            : UIColor(red: 0.1, green: 0.15, blue: 0.3, alpha: 1.0) // dark navy
     })
 
     /// Secondary text / labels on gradient
     static let onGradientSecondary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.70, alpha: 1.0)   // noticeably dimmer on dark
-            : UIColor(white: 1.0, alpha: 0.70)   // translucent white on light
+            ? UIColor(white: 0.70, alpha: 1.0)
+            : UIColor(red: 0.2, green: 0.3, blue: 0.5, alpha: 0.8)  // muted dark blue
     })
 
     /// Card surface on gradient
     static let onGradientCard = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(white: 0.0, alpha: 0.35)   // dark glass
-            : UIColor(white: 1.0, alpha: 0.45)   // frosted white glass — more opaque for contrast
+            : UIColor(white: 1.0, alpha: 0.45)   // frosted white glass
     })
 
     /// Card border on gradient
     static let onGradientCardBorder = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(white: 1.0, alpha: 0.15)
-            : UIColor(white: 1.0, alpha: 0.6)    // stronger border in light mode
+            : UIColor(white: 1.0, alpha: 0.6)
+    })
+
+    /// Accent colors that stay readable on both gradient modes
+    static let accentNow = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? .systemYellow
+            : UIColor(red: 0.85, green: 0.55, blue: 0.0, alpha: 1.0) // deep amber
+    })
+
+    static let accentActual = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? .systemGreen
+            : UIColor(red: 0.0, green: 0.5, blue: 0.2, alpha: 1.0)  // forest green
+    })
+
+    static let accentRain = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? .systemCyan
+            : UIColor(red: 0.0, green: 0.35, blue: 0.65, alpha: 1.0) // deep blue
     })
 }
 
