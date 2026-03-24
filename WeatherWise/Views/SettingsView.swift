@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
-    @State private var showSetDefaultConfirmation = false
+    @State private var showDefaultLocationPicker = false
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -23,20 +23,9 @@ struct SettingsView: View {
                 .padding(.bottom, 40)
             }
         }
-        .alert("Set Default Location", isPresented: $showSetDefaultConfirmation) {
-            Button("Set to \(viewModel.cityName)", role: nil) {
-                viewModel.setCurrentLocationAsDefault()
-            }
-            Button("Reset to Wise County", role: nil) {
-                viewModel.setDefaultLocation(
-                    name: "Wise County, TX",
-                    lat: WeatherViewModel.wiseCountyLat,
-                    lon: WeatherViewModel.wiseCountyLon
-                )
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Choose a default location for when GPS is unavailable.")
+        .sheet(isPresented: $showDefaultLocationPicker) {
+            DefaultLocationPicker()
+                .environmentObject(viewModel)
         }
     }
 
@@ -59,7 +48,7 @@ struct SettingsView: View {
             SettingsDivider()
 
             Button {
-                showSetDefaultConfirmation = true
+                showDefaultLocationPicker = true
             } label: {
                 SettingsRow(
                     icon: "mappin.circle.fill",
