@@ -12,24 +12,24 @@ struct WeatherDetailCard: View {
                 Text(title)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
             } icon: {
                 Image(systemName: icon)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
             }
 
             Text(value)
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
 
             if let subtitle {
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

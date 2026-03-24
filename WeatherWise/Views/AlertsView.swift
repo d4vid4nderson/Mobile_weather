@@ -37,13 +37,13 @@ struct AlertsView: View {
                     mostSevereSeverity == .extreme
                         ? Color.red.opacity(colorScheme == .dark ? 0.4 : 0.15)
                         : Color.orange.opacity(colorScheme == .dark ? 0.3 : 0.12),
-                    Color(.systemBackground)
+                    Color.appBackground
                 ],
                 startPoint: .top,
                 endPoint: .bottom
             )
         } else {
-            Color(.systemBackground)
+            Color.appBackground
         }
     }
 
@@ -54,11 +54,11 @@ struct AlertsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Severe Weather Alerts")
                     .font(.title.bold())
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
 
                 Text("Wise County, Texas")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
             }
 
             Spacer()
@@ -111,7 +111,7 @@ struct AlertsView: View {
                 .scaleEffect(1.5)
             Text("Checking for alerts...")
                 .font(.headline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
         }
         .frame(maxWidth: .infinity, minHeight: 300)
     }
@@ -128,7 +128,7 @@ struct AlertsView: View {
 
             Text("No active weather alerts for Wise County.")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, minHeight: 300)
@@ -201,12 +201,12 @@ struct AlertCardView: View {
 
                     Text(alert.properties.event)
                         .font(.headline.bold())
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.appPrimary)
 
                     Spacer()
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.appTertiary)
                         .font(.caption)
                 }
 
@@ -224,7 +224,7 @@ struct AlertCardView: View {
                 // Areas affected
                 Text(alert.properties.areaDesc)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
                     .lineLimit(isExpanded ? nil : 2)
 
                 // Time range
@@ -234,7 +234,7 @@ struct AlertCardView: View {
                     Text(alert.formattedTimeRange)
                         .font(.caption)
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
 
                 // Expanded detail
                 if isExpanded {
@@ -245,7 +245,7 @@ struct AlertCardView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.secondarySystemGroupedBackground))
+                .fill(Color.appCardBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .strokeBorder(
@@ -265,7 +265,7 @@ struct AlertCardView: View {
         if let headline = alert.properties.headline, !headline.isEmpty {
             Text(headline)
                 .font(.subheadline.bold())
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
                 .padding(.bottom, 4)
         }
 
@@ -278,7 +278,7 @@ struct AlertCardView: View {
 
                 Text(description)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -292,7 +292,7 @@ struct AlertCardView: View {
 
                 Text(instruction)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(8)
@@ -306,7 +306,7 @@ struct AlertCardView: View {
         if let sender = alert.properties.senderName {
             Text("Source: \(sender)")
                 .font(.caption2)
-                .foregroundStyle(Color(.tertiaryLabel))
+                .foregroundStyle(Color.appTertiary)
         }
     }
 }

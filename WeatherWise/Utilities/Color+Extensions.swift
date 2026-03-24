@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension Color {
-    // MARK: - Custom Colors
+    // MARK: - Custom Weather Colors
     static let weatherBlue = Color(red: 0.2, green: 0.5, blue: 0.9)
     static let weatherDarkBlue = Color(red: 0.1, green: 0.2, blue: 0.5)
     static let weatherNight = Color(red: 0.05, green: 0.05, blue: 0.2)
@@ -11,6 +11,51 @@ extension Color {
     static let weatherRainy = Color(red: 0.3, green: 0.4, blue: 0.55)
     static let weatherSnowy = Color(red: 0.7, green: 0.75, blue: 0.85)
     static let weatherStormy = Color(red: 0.2, green: 0.2, blue: 0.35)
+
+    // MARK: - Adaptive App Colors
+    // Modern iOS-inspired palette — soft tones, no harsh pure black/white
+
+    /// Primary text: warm off-white in dark, charcoal in light
+    static let appPrimary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.93, green: 0.93, blue: 0.95, alpha: 1.0)
+            : UIColor(red: 0.13, green: 0.13, blue: 0.15, alpha: 1.0)
+    })
+
+    /// Secondary text: muted complement
+    static let appSecondary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.60, green: 0.60, blue: 0.65, alpha: 1.0)
+            : UIColor(red: 0.40, green: 0.40, blue: 0.45, alpha: 1.0)
+    })
+
+    /// Tertiary text / icons: most muted
+    static let appTertiary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.40, green: 0.40, blue: 0.45, alpha: 1.0)
+            : UIColor(red: 0.62, green: 0.62, blue: 0.67, alpha: 1.0)
+    })
+
+    /// Page background: soft dark charcoal / warm light gray
+    static let appBackground = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.10, green: 0.10, blue: 0.11, alpha: 1.0)
+            : UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
+    })
+
+    /// Card / container surface: elevated dark / near-white
+    static let appCardBackground = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.15, green: 0.15, blue: 0.17, alpha: 1.0)
+            : UIColor(red: 0.98, green: 0.98, blue: 1.0, alpha: 1.0)
+    })
+
+    /// Search bar / tertiary surface
+    static let appTertiaryBackground = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.17, green: 0.17, blue: 0.19, alpha: 1.0)
+            : UIColor(red: 0.93, green: 0.93, blue: 0.95, alpha: 1.0)
+    })
 }
 
 // MARK: - Weather Gradients

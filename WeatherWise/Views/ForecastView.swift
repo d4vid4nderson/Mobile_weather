@@ -37,7 +37,7 @@ struct ForecastView: View {
             Label("FORECAST", systemImage: "calendar")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
 
             Spacer()
 
@@ -67,7 +67,7 @@ struct ForecastView: View {
                     Image(systemName: "chevron.down")
                         .font(.system(size: 10, weight: .bold))
                 }
-                .foregroundStyle(.primary.opacity(0.8))
+                .foregroundStyle(Color.appPrimary.opacity(0.8))
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
                 .background(.ultraThinMaterial, in: Capsule())
@@ -81,19 +81,19 @@ struct ForecastView: View {
         VStack(spacing: 16) {
             Image(systemName: "calendar.badge.clock")
                 .font(.system(size: 40))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
 
             Text("10-Day Forecast")
                 .font(.headline)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             Text("Coming Soon")
                 .font(.title2.bold())
-                .foregroundStyle(.primary.opacity(0.8))
+                .foregroundStyle(Color.appPrimary.opacity(0.8))
 
             Text("A 10-day forecast requires a paid API.\nStay tuned for a future update!")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -108,7 +108,7 @@ struct ForecastView: View {
             Label("HOURLY FORECAST", systemImage: "clock")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
                 .padding(.horizontal, 20)
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -134,7 +134,7 @@ struct ForecastView: View {
             Text(item.dt.asDate.formattedHour(timezoneOffset: timezone))
                 .font(.caption)
                 .fontWeight(.medium)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
 
             Image(systemName: icon)
                 .font(.title2)
@@ -143,7 +143,7 @@ struct ForecastView: View {
 
             Text("\(Int(viewModel.convertTemp(item.main.temp).rounded()))°")
                 .font(.headline)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             if let pop = item.pop, pop > 0.1 {
                 HStack(spacing: 2) {
@@ -182,7 +182,7 @@ struct ForecastView: View {
             Text(day.date.formattedShortDay(timezoneOffset: timezone))
                 .font(.body)
                 .fontWeight(.medium)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
                 .frame(width: 50, alignment: .leading)
 
             if day.pop > 0.1 {
@@ -211,7 +211,7 @@ struct ForecastView: View {
             HStack(spacing: 8) {
                 Text("\(Int(viewModel.convertTemp(day.lowTemp).rounded()))°")
                     .font(.body)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
                     .frame(width: 35, alignment: .trailing)
 
                 temperatureBar(low: day.lowTemp, high: day.highTemp)
@@ -219,7 +219,7 @@ struct ForecastView: View {
 
                 Text("\(Int(viewModel.convertTemp(day.highTemp).rounded()))°")
                     .font(.body)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
                     .frame(width: 35, alignment: .leading)
             }
         }
@@ -238,7 +238,7 @@ struct ForecastView: View {
         return GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(.primary.opacity(0.15))
+                    .fill(Color.appPrimary.opacity(0.15))
 
                 Capsule()
                     .fill(

@@ -55,7 +55,7 @@ struct ContentView: View {
 
             alertsTab
                 .background {
-                    Color(.systemBackground)
+                    Color.appBackground
                         .ignoresSafeArea()
                 }
                 .tabItem {
@@ -67,7 +67,7 @@ struct ContentView: View {
             SettingsView()
                 .environmentObject(viewModel)
                 .background {
-                    Color(.systemGroupedBackground)
+                    Color.appBackground
                         .ignoresSafeArea()
                 }
                 .tabItem {
@@ -143,7 +143,7 @@ struct ContentView: View {
             Image(systemName: "magnifyingglass")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -158,7 +158,7 @@ struct ContentView: View {
             Image(systemName: "location.fill")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -176,7 +176,7 @@ struct ContentView: View {
                 Text("Wise Co.")
                     .font(.caption2.bold())
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(Color.appPrimary)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .background(.ultraThinMaterial, in: Capsule())
@@ -192,10 +192,10 @@ struct ContentView: View {
                 .scaleEffect(1.5)
             Text("Loading Weather Wise...")
                 .font(.headline)
-                .foregroundStyle(.primary.opacity(0.8))
+                .foregroundStyle(Color.appPrimary.opacity(0.8))
             Text("Wise County, Texas")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
         }
     }
 
@@ -207,11 +207,11 @@ struct ContentView: View {
 
             Text("Unable to Load Weather")
                 .font(.title2.bold())
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             Text(message)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
 
@@ -220,7 +220,7 @@ struct ContentView: View {
             } label: {
                 Label("Try Again", systemImage: "arrow.clockwise")
                     .font(.headline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())
@@ -231,7 +231,7 @@ struct ContentView: View {
             } label: {
                 Label("Search City", systemImage: "magnifyingglass")
                     .font(.headline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())

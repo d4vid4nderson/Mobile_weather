@@ -9,7 +9,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGroupedBackground)
+                Color.appBackground
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
@@ -47,7 +47,7 @@ struct SearchView: View {
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
 
             TextField("Enter city name...", text: $searchText)
                 .textFieldStyle(.plain)
@@ -63,12 +63,12 @@ struct SearchView: View {
                     searchText = ""
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.appSecondary)
                 }
             }
         }
         .padding(12)
-        .background(Color(.tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        .background(Color.appTertiaryBackground, in: RoundedRectangle(cornerRadius: 12))
     }
 
     // MARK: - Search Action
@@ -86,7 +86,7 @@ struct SearchView: View {
             }
             .foregroundStyle(.blue)
             .padding(16)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+            .background(Color.appCardBackground, in: RoundedRectangle(cornerRadius: 12))
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
@@ -101,7 +101,7 @@ struct SearchView: View {
                     HStack {
                         Text("Recent Searches")
                             .font(.headline)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(Color.appPrimary)
                         Spacer()
                         Button("Clear All") {
                             withAnimation {
@@ -124,7 +124,7 @@ struct SearchView: View {
                             }
                         }
                     }
-                    .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+                    .background(Color.appCardBackground, in: RoundedRectangle(cornerRadius: 12))
                     .padding(.horizontal, 16)
                 }
             }
@@ -138,11 +138,11 @@ struct SearchView: View {
             HStack(spacing: 12) {
                 Image(systemName: "clock")
                     .font(.body)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appSecondary)
                     .frame(width: 24)
 
                 Text(city)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
                     .font(.body)
 
                 Spacer()
@@ -154,7 +154,7 @@ struct SearchView: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.appSecondary)
                 }
             }
             .padding(.horizontal, 16)

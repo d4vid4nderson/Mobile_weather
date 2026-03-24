@@ -9,7 +9,7 @@ struct SettingsView: View {
             VStack(spacing: 0) {
                 Text("Settings")
                     .font(.system(size: 28, weight: .medium, design: .rounded))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.appPrimary)
                     .padding(.top, 70)
                     .padding(.bottom, 28)
 
@@ -81,7 +81,7 @@ struct SettingsView: View {
                     SettingsIconBadge(icon: "circle.lefthalf.filled", color: .purple)
                     Text("Theme")
                         .font(.body)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.appPrimary)
                     Spacer()
                 }
 
@@ -157,7 +157,7 @@ private struct SettingsGroup<Content: View>: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.footnote)
-                .foregroundStyle(Color(.secondaryLabel))
+                .foregroundStyle(Color.appSecondary)
                 .padding(.leading, 16)
 
             VStack(spacing: 0) {
@@ -167,7 +167,7 @@ private struct SettingsGroup<Content: View>: View {
             .padding(.vertical, 4)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(Color(.secondarySystemGroupedBackground))
+                    .fill(Color.appCardBackground)
             )
         }
     }
@@ -212,25 +212,25 @@ private struct SettingsRow: View {
 
             Text(title)
                 .font(.body)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             Spacer()
 
             if !value.isEmpty {
                 Text(value)
                     .font(.body)
-                    .foregroundStyle(Color(.secondaryLabel))
+                    .foregroundStyle(Color.appSecondary)
             }
 
             switch accessory {
             case .chevron:
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color(.tertiaryLabel))
+                    .foregroundStyle(Color.appTertiary)
             case .reload:
                 Image(systemName: "arrow.clockwise")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color(.tertiaryLabel))
+                    .foregroundStyle(Color.appTertiary)
             case .none:
                 EmptyView()
             }
@@ -253,7 +253,7 @@ private struct SettingsMenuRow<T: Hashable & RawRepresentable>: View where T.Raw
 
             Text(title)
                 .font(.body)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             Spacer()
 
@@ -274,10 +274,10 @@ private struct SettingsMenuRow<T: Hashable & RawRepresentable>: View where T.Raw
                 HStack(spacing: 4) {
                     Text(selection.rawValue)
                         .font(.body)
-                        .foregroundStyle(Color(.secondaryLabel))
+                        .foregroundStyle(Color.appSecondary)
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Color(.tertiaryLabel))
+                        .foregroundStyle(Color.appTertiary)
                 }
             }
         }

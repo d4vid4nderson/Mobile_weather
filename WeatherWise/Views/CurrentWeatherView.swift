@@ -31,7 +31,7 @@ struct CurrentWeatherView: View {
         VStack(spacing: 4) {
             Text(viewModel.cityName)
                 .font(.system(size: 34, weight: .medium, design: .rounded))
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.appPrimary)
 
             if !viewModel.countryCode.isEmpty {
                 HStack(spacing: 4) {
@@ -42,7 +42,7 @@ struct CurrentWeatherView: View {
                     }
                 }
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
             }
         }
     }
@@ -52,7 +52,7 @@ struct CurrentWeatherView: View {
     private var temperatureSection: some View {
         Text(viewModel.temperatureString)
             .font(.system(size: 96, weight: .thin, design: .rounded))
-            .foregroundStyle(.primary)
+            .foregroundStyle(Color.appPrimary)
     }
 
     // MARK: - Condition
@@ -66,7 +66,7 @@ struct CurrentWeatherView: View {
                 .font(.title3)
                 .fontWeight(.medium)
         }
-        .foregroundStyle(.primary)
+        .foregroundStyle(Color.appPrimary)
     }
 
     // MARK: - Temp Range
@@ -79,9 +79,9 @@ struct CurrentWeatherView: View {
                 .font(.headline)
             Text("Feels like \(viewModel.feelsLikeString)")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appSecondary)
         }
-        .foregroundStyle(.primary)
+        .foregroundStyle(Color.appPrimary)
     }
 
     // MARK: - Details Grid
