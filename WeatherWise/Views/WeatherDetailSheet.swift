@@ -65,6 +65,13 @@ struct WeatherDetailSheet: View {
                         .ignoresSafeArea()
                 }
 
+                // Wind gusts blowing left to right
+                if detailType == .wind,
+                   let speed = viewModel.currentWeather?.wind.speed {
+                    WindGustView(windSpeed: speed)
+                        .ignoresSafeArea()
+                }
+
                 ScrollView {
                     VStack(spacing: 20) {
                         // Hero value (skip for sun views — arc is the hero)

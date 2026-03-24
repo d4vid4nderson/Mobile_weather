@@ -91,22 +91,31 @@ struct ContentView: View {
     // MARK: - Weather Tab (Current + Forecast combined)
 
     private var weatherTab: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
-                if !viewModel.alerts.isEmpty {
-                    alertBanner
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    if !viewModel.alerts.isEmpty {
+                        alertBanner
+                    }
+
+                    CurrentWeatherView()
+                        .environmentObject(viewModel)
+
+                    ForecastView()
+                        .environmentObject(viewModel)
+                        .padding(.top, 8)
                 }
-
-                CurrentWeatherView()
-                    .environmentObject(viewModel)
-
-                ForecastView()
-                    .environmentObject(viewModel)
-                    .padding(.top, 8)
             }
-        }
-        .refreshable {
-            await viewModel.refresh()
+            .refreshable {
+                await viewModel.refresh()
+            }
+
+            // Weather particle effects overlay
+            if let conditionId = viewModel.currentWeather?.weather.first?.id {
+                WeatherEffectsView(conditionId: conditionId)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+            }
         }
     }
 
