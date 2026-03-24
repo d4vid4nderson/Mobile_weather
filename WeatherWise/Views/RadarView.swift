@@ -740,7 +740,7 @@ struct RadarView: View {
         guard let map = mapView else { return }
         let region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: lat, longitude: lon),
-            span: span ?? MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+            span: span ?? MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)
         )
         map.setRegion(region, animated: true)
     }
