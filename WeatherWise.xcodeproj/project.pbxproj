@@ -32,6 +32,7 @@
 		A1001801 /* SavedLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001800 /* SavedLocationPicker.swift */; };
 		A1001901 /* WeatherDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001900 /* WeatherDetailSheet.swift */; };
 		A1001A01 /* SunArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001A00 /* SunArcView.swift */; };
+		A1001B01 /* DropletsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001B00 /* DropletsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		A1001800 /* SavedLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationPicker.swift; sourceTree = "<group>"; };
 		A1001900 /* WeatherDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailSheet.swift; sourceTree = "<group>"; };
 		A1001A00 /* SunArcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunArcView.swift; sourceTree = "<group>"; };
+		A1001B00 /* DropletsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropletsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				A1001800 /* SavedLocationPicker.swift */,
 				A1001900 /* WeatherDetailSheet.swift */,
 				A1001A00 /* SunArcView.swift */,
+				A1001B00 /* DropletsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				A1001801 /* SavedLocationPicker.swift in Sources */,
 				A1001901 /* WeatherDetailSheet.swift in Sources */,
 				A1001A01 /* SunArcView.swift in Sources */,
+				A1001B01 /* DropletsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

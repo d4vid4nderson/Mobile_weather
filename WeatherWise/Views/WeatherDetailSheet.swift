@@ -57,6 +57,14 @@ struct WeatherDetailSheet: View {
                 viewModel.backgroundGradient
                     .ignoresSafeArea()
 
+                // Dripping droplets for high humidity
+                if detailType == .humidity,
+                   let humidity = viewModel.currentWeather?.main.humidity,
+                   humidity >= 75 {
+                    DropletsView(humidity: humidity)
+                        .ignoresSafeArea()
+                }
+
                 ScrollView {
                     VStack(spacing: 20) {
                         // Hero value (skip for sun views — arc is the hero)
