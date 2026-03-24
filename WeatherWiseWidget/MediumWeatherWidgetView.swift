@@ -49,7 +49,7 @@ struct MediumWeatherWidgetView: View {
                     .minimumScaleFactor(0.6)
 
                 Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
-                    .font(.caption2)
+                    .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.8))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
