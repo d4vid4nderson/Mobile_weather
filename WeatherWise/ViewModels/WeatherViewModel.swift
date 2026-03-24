@@ -55,6 +55,8 @@ final class WeatherViewModel: ObservableObject {
     @Published var cityName: String = ""
     @Published var searchText: String = ""
     @Published var recentSearches: [String] = []
+    @Published var citySuggestions: [GeocodingResult] = []
+    @Published var isLoadingSuggestions = false
 
     // MARK: - User Settings
     @Published var temperatureUnit: TemperatureUnit {
@@ -89,6 +91,7 @@ final class WeatherViewModel: ObservableObject {
     private let weatherService = WeatherService.shared
     private let alertService = AlertService.shared
     private var cancellables = Set<AnyCancellable>()
+    private var suggestionTask: Task<Void, Never>?
 
     // MARK: - Computed Properties
 
@@ -384,6 +387,44 @@ final class WeatherViewModel: ObservableObject {
     func searchCity(_ city: String) {
         searchText = city
         searchCity()
+    }
+
+    /// Fetch city autocomplete suggestions with debouncing
+    func fetchCitySuggestions(for query: String) {
+        suggestionTask?.cancel()
+
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2 else {
+            citySuggestions = []
+            isLoadingSuggestions = false
+            return
+        }
+
+        isLoadingSuggestions = true
+        suggestionTask = Task {
+            // Debounce: wait 300ms before firing
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            guard !Task.isCancelled else { return }
+
+            do {
+                let results = try await weatherService.fetchCitySuggestions(query: trimmed)
+                guard !Task.isCancelled else { return }
+                self.citySuggestions = results
+            } catch {
+                guard !Task.isCancelled else { return }
+                self.citySuggestions = []
+            }
+            self.isLoadingSuggestions = false
+        }
+    }
+
+    /// Select a city from autocomplete and fetch its weather by coordinates
+    func selectCity(_ city: GeocodingResult) {
+        citySuggestions = []
+        addRecentSearch(city.name)
+        Task {
+            await fetchWeather(lat: city.lat, lon: city.lon)
+        }
     }
 
     func loadWiseCounty() {

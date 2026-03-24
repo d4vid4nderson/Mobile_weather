@@ -31,6 +31,7 @@ actor WeatherService {
     static let apiKey = "39029bf0c1f9bc244377f3e8c16de220"
 
     private let baseURL = "https://api.openweathermap.org/data/2.5"
+    private let geoBaseURL = "https://api.openweathermap.org/geo/1.0"
     private let airQualityBaseURL = "https://api.openweathermap.org/data/2.5/air_pollution"
     // Imperial units: Fahrenheit, mph
     private let units = "imperial"
@@ -73,6 +74,16 @@ actor WeatherService {
             throw WeatherError.invalidURL
         }
         let urlString = "\(baseURL)/forecast?q=\(encodedCity)&appid=\(WeatherService.apiKey)&units=\(units)"
+        return try await performRequest(urlString: urlString)
+    }
+
+    // MARK: - Geocoding (City Autocomplete)
+
+    func fetchCitySuggestions(query: String, limit: Int = 5) async throws -> [GeocodingResult] {
+        guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            throw WeatherError.invalidURL
+        }
+        let urlString = "\(geoBaseURL)/direct?q=\(encodedQuery)&limit=\(limit)&appid=\(WeatherService.apiKey)"
         return try await performRequest(urlString: urlString)
     }
 

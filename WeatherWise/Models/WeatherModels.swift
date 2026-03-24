@@ -1,5 +1,27 @@
 import Foundation
 
+// MARK: - Geocoding Result (City Autocomplete)
+struct GeocodingResult: Codable, Identifiable, Equatable {
+    var id: String { "\(name)-\(lat)-\(lon)" }
+    let name: String
+    let lat: Double
+    let lon: Double
+    let country: String?
+    let state: String?
+
+    /// Display string: "City, State, Country" or "City, Country"
+    var displayName: String {
+        var parts = [name]
+        if let state, !state.isEmpty { parts.append(state) }
+        if let country, !country.isEmpty { parts.append(country) }
+        return parts.joined(separator: ", ")
+    }
+
+    static func == (lhs: GeocodingResult, rhs: GeocodingResult) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 // MARK: - Current Weather Response
 struct WeatherResponse: Codable, Identifiable {
     let id: Int
