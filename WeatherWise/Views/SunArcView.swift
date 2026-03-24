@@ -83,7 +83,7 @@ struct SunArcView: View {
                         path.move(to: CGPoint(x: 0, y: horizonY))
                         path.addLine(to: CGPoint(x: rect.width, y: horizonY))
                     }
-                    .stroke(Color.white.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [6, 4]))
+                    .stroke(Color.onGradientSecondary.opacity(0.4), style: StrokeStyle(lineWidth: 1, dash: [6, 4]))
 
                     // Sun curve
                     sunCurvePath(rect: rect)
@@ -289,24 +289,24 @@ struct SunArcView: View {
             // "Day" label
             Text("DAY")
                 .font(.system(size: 9, weight: .semibold))
-                .foregroundStyle(Color.yellow.opacity(0.5))
+                .foregroundStyle(Color.accentNow.opacity(0.7))
                 .position(x: rect.width / 2, y: horizonY - rect.height * 0.32)
 
             // "Night" labels
             Text("NIGHT")
                 .font(.system(size: 9, weight: .semibold))
-                .foregroundStyle(Color.blue.opacity(0.4))
+                .foregroundStyle(Color.accentRain.opacity(0.6))
                 .position(x: rect.width * 0.12, y: horizonY + rect.height * 0.25)
 
             Text("NIGHT")
                 .font(.system(size: 9, weight: .semibold))
-                .foregroundStyle(Color.blue.opacity(0.4))
+                .foregroundStyle(Color.accentRain.opacity(0.6))
                 .position(x: rect.width * 0.88, y: horizonY + rect.height * 0.25)
 
             // Horizon label
             Text("HORIZON")
                 .font(.system(size: 8, weight: .medium))
-                .foregroundStyle(Color.white.opacity(0.25))
+                .foregroundStyle(Color.onGradientSecondary.opacity(0.5))
                 .position(x: rect.width - 30, y: horizonY - 10)
         }
     }

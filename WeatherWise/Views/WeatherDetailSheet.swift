@@ -455,7 +455,7 @@ struct WeatherDetailSheet: View {
 
     private var detailDivider: some View {
         Divider()
-            .background(Color.white.opacity(0.1))
+            .background(Color.onGradientSecondary.opacity(0.2))
             .padding(.leading, 16)
     }
 }
