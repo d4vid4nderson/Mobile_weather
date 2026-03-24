@@ -28,6 +28,8 @@
 		A1001401 /* AlertBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001400 /* AlertBannerView.swift */; };
 		A1001501 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001500 /* SettingsView.swift */; };
 		A1001601 /* DefaultLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001600 /* DefaultLocationPicker.swift */; };
+		A1001701 /* SavedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001700 /* SavedLocation.swift */; };
+		A1001801 /* SavedLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001800 /* SavedLocationPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +56,8 @@
 		A1001400 /* AlertBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerView.swift; sourceTree = "<group>"; };
 		A1001500 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A1001600 /* DefaultLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLocationPicker.swift; sourceTree = "<group>"; };
+		A1001700 /* SavedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocation.swift; sourceTree = "<group>"; };
+		A1001800 /* SavedLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,7 @@
 			children = (
 				A1000200 /* WeatherModels.swift */,
 				A1001000 /* AlertModels.swift */,
+				A1001700 /* SavedLocation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 				A1001400 /* AlertBannerView.swift */,
 				A1001500 /* SettingsView.swift */,
 				A1001600 /* DefaultLocationPicker.swift */,
+				A1001800 /* SavedLocationPicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -241,6 +247,8 @@
 				A1001401 /* AlertBannerView.swift in Sources */,
 				A1001501 /* SettingsView.swift in Sources */,
 				A1001601 /* DefaultLocationPicker.swift in Sources */,
+				A1001701 /* SavedLocation.swift in Sources */,
+				A1001801 /* SavedLocationPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
