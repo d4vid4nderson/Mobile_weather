@@ -56,6 +56,15 @@ extension Color {
             ? UIColor(red: 0.17, green: 0.17, blue: 0.19, alpha: 1.0)
             : UIColor(red: 0.93, green: 0.93, blue: 0.95, alpha: 1.0)
     })
+
+    // MARK: - On-Gradient Colors (Weather Tab)
+    // Always light — used on the colored weather gradient background
+
+    /// Primary text on gradient: soft white
+    static let onGradientPrimary = Color(white: 0.95)
+
+    /// Secondary text on gradient: muted white
+    static let onGradientSecondary = Color(white: 0.78)
 }
 
 // MARK: - Weather Gradients

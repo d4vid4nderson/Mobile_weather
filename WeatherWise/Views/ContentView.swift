@@ -143,7 +143,7 @@ struct ContentView: View {
             Image(systemName: "magnifyingglass")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(Color.appPrimary)
+                .foregroundStyle(Color.onGradientPrimary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -158,7 +158,7 @@ struct ContentView: View {
             Image(systemName: "location.fill")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(Color.appPrimary)
+                .foregroundStyle(Color.onGradientPrimary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -176,7 +176,7 @@ struct ContentView: View {
                 Text("Wise Co.")
                     .font(.caption2.bold())
             }
-            .foregroundStyle(Color.appPrimary)
+            .foregroundStyle(Color.onGradientPrimary)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .background(.ultraThinMaterial, in: Capsule())
@@ -192,10 +192,10 @@ struct ContentView: View {
                 .scaleEffect(1.5)
             Text("Loading Weather Wise...")
                 .font(.headline)
-                .foregroundStyle(Color.appPrimary.opacity(0.8))
+                .foregroundStyle(Color.onGradientPrimary.opacity(0.8))
             Text("Wise County, Texas")
                 .font(.subheadline)
-                .foregroundStyle(Color.appSecondary)
+                .foregroundStyle(Color.onGradientSecondary)
         }
     }
 
@@ -207,11 +207,11 @@ struct ContentView: View {
 
             Text("Unable to Load Weather")
                 .font(.title2.bold())
-                .foregroundStyle(Color.appPrimary)
+                .foregroundStyle(Color.onGradientPrimary)
 
             Text(message)
                 .font(.subheadline)
-                .foregroundStyle(Color.appSecondary)
+                .foregroundStyle(Color.onGradientSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
 
@@ -220,7 +220,7 @@ struct ContentView: View {
             } label: {
                 Label("Try Again", systemImage: "arrow.clockwise")
                     .font(.headline)
-                    .foregroundStyle(Color.appPrimary)
+                    .foregroundStyle(Color.onGradientPrimary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())
@@ -231,7 +231,7 @@ struct ContentView: View {
             } label: {
                 Label("Search City", systemImage: "magnifyingglass")
                     .font(.headline)
-                    .foregroundStyle(Color.appPrimary)
+                    .foregroundStyle(Color.onGradientPrimary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())
