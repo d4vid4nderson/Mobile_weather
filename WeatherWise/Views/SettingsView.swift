@@ -209,6 +209,8 @@ private struct SettingsRow: View {
                 Text(value)
                     .font(.body)
                     .foregroundStyle(Color.appSecondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
 
             switch accessory {
