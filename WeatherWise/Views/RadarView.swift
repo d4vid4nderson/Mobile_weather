@@ -110,11 +110,11 @@ struct StormAnnotation: Identifiable {
             }
         }
 
-        var pinColor: MKPinAnnotationView.PinColor {
+        var markerTintColor: UIColor {
             switch self {
-            case .watch: return .green
-            case .warning: return .purple
-            case .emergency: return .red
+            case .watch: return .systemGreen
+            case .warning: return .systemPurple
+            case .emergency: return .systemRed
             }
         }
     }
