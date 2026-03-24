@@ -83,10 +83,7 @@ struct ContentView: View {
         }
         .overlay(alignment: .topLeading) {
             if selectedTab == 0 {
-                HStack(spacing: 8) {
-                    locationButton
-                    wiseCountyButton
-                }
+                quickLocationBar
             }
         }
     }
@@ -151,37 +148,67 @@ struct ContentView: View {
         .padding(.top, 8)
     }
 
-    private var locationButton: some View {
-        Button {
-            viewModel.fetchWeather()
-        } label: {
-            Image(systemName: "location.fill")
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundStyle(Color.onGradientPrimary)
-                .padding(12)
-                .background(.ultraThinMaterial, in: Circle())
+    private var quickLocationBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                // Current location button
+                Button {
+                    viewModel.fetchWeather()
+                } label: {
+                    Image(systemName: "location.fill")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.onGradientPrimary)
+                        .padding(12)
+                        .background(.ultraThinMaterial, in: Circle())
+                }
+
+                // Default location pill
+                Button {
+                    viewModel.loadWiseCounty()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.caption)
+                        Text(shortName(viewModel.defaultLocationName))
+                            .font(.caption2.bold())
+                    }
+                    .foregroundStyle(Color.onGradientPrimary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(.ultraThinMaterial, in: Capsule())
+                }
+
+                // Saved location pills
+                ForEach(viewModel.savedLocations) { location in
+                    Button {
+                        viewModel.loadSavedLocationWeather(location)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: location.iconName)
+                                .font(.caption)
+                            Text(location.label)
+                                .font(.caption2.bold())
+                        }
+                        .foregroundStyle(Color.onGradientPrimary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(.ultraThinMaterial, in: Capsule())
+                    }
+                }
+            }
+            .padding(.leading, 20)
+            .padding(.trailing, 8)
         }
-        .padding(.leading, 20)
         .padding(.top, 8)
     }
 
-    private var wiseCountyButton: some View {
-        Button {
-            viewModel.loadWiseCounty()
-        } label: {
-            HStack(spacing: 4) {
-                Image(systemName: "mappin.circle.fill")
-                    .font(.caption)
-                Text("Wise Co.")
-                    .font(.caption2.bold())
-            }
-            .foregroundStyle(Color.onGradientPrimary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: Capsule())
-        }
-        .padding(.top, 8)
+    /// Shorten a location name for the pill (e.g. "Wise County, TX" → "Wise Co.")
+    private func shortName(_ name: String) -> String {
+        let city = name.components(separatedBy: ",").first ?? name
+        return city
+            .replacingOccurrences(of: "County", with: "Co.")
+            .trimmingCharacters(in: .whitespaces)
     }
 
     // MARK: - Loading & Error

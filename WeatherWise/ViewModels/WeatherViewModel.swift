@@ -80,6 +80,9 @@ final class WeatherViewModel: ObservableObject {
     @Published var defaultLocationLon: Double {
         didSet { UserDefaults.standard.set(defaultLocationLon, forKey: "defaultLocationLon") }
     }
+    @Published var savedLocations: [SavedLocation] = [] {
+        didSet { persistSavedLocations() }
+    }
 
     // MARK: - Constants
     // Wise County, Texas (Decatur area)
@@ -306,6 +309,7 @@ final class WeatherViewModel: ObservableObject {
         self.defaultLocationName = UserDefaults.standard.string(forKey: "defaultLocationName") ?? "Wise County, TX"
         self.defaultLocationLat = UserDefaults.standard.object(forKey: "defaultLocationLat") as? Double ?? Self.wiseCountyLat
         self.defaultLocationLon = UserDefaults.standard.object(forKey: "defaultLocationLon") as? Double ?? Self.wiseCountyLon
+        self.savedLocations = Self.loadSavedLocations()
 
         loadRecentSearches()
         observeLocation()
@@ -456,6 +460,43 @@ final class WeatherViewModel: ObservableObject {
                 lon: weather.coord.lon
             )
         }
+    }
+
+    // MARK: - Saved Locations
+
+    func addSavedLocation(label: String, cityName: String, lat: Double, lon: Double) {
+        let location = SavedLocation(label: label, cityName: cityName, latitude: lat, longitude: lon)
+        savedLocations.append(location)
+    }
+
+    func updateSavedLocation(_ location: SavedLocation) {
+        if let index = savedLocations.firstIndex(where: { $0.id == location.id }) {
+            savedLocations[index] = location
+        }
+    }
+
+    func removeSavedLocation(_ location: SavedLocation) {
+        savedLocations.removeAll { $0.id == location.id }
+    }
+
+    func loadSavedLocationWeather(_ location: SavedLocation) {
+        Task {
+            await fetchWeather(lat: location.latitude, lon: location.longitude)
+        }
+    }
+
+    private func persistSavedLocations() {
+        if let data = try? JSONEncoder().encode(savedLocations) {
+            UserDefaults.standard.set(data, forKey: "savedLocations")
+        }
+    }
+
+    private static func loadSavedLocations() -> [SavedLocation] {
+        guard let data = UserDefaults.standard.data(forKey: "savedLocations"),
+              let locations = try? JSONDecoder().decode([SavedLocation].self, from: data) else {
+            return []
+        }
+        return locations
     }
 
     func refresh() async {

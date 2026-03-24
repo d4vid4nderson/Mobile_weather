@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
     @State private var showDefaultLocationPicker = false
+    @State private var showAddLocation = false
+    @State private var editingLocation: SavedLocation?
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -25,6 +27,14 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showDefaultLocationPicker) {
             DefaultLocationPicker()
+                .environmentObject(viewModel)
+        }
+        .sheet(isPresented: $showAddLocation) {
+            SavedLocationPicker(editingLocation: nil)
+                .environmentObject(viewModel)
+        }
+        .sheet(item: $editingLocation) { location in
+            SavedLocationPicker(editingLocation: location)
                 .environmentObject(viewModel)
         }
     }
@@ -52,12 +62,51 @@ struct SettingsView: View {
             } label: {
                 SettingsRow(
                     icon: "mappin.circle.fill",
-                    iconBackground: .orange,
+                    iconBackground: .green,
                     title: "Default Location",
                     value: viewModel.defaultLocationName,
                     accessory: .chevron
                 )
             }
+
+            if !viewModel.savedLocations.isEmpty {
+                ForEach(viewModel.savedLocations) { location in
+                    SettingsDivider()
+
+                    Button {
+                        editingLocation = location
+                    } label: {
+                        SettingsRow(
+                            icon: location.iconName,
+                            iconBackground: iconColor(for: location),
+                            title: location.label,
+                            value: location.cityName,
+                            accessory: .chevron
+                        )
+                    }
+                }
+            }
+
+            SettingsDivider()
+
+            Button {
+                showAddLocation = true
+            } label: {
+                SettingsRow(
+                    icon: "plus.circle.fill",
+                    iconBackground: .gray,
+                    title: "Add Location",
+                    accessory: .chevron
+                )
+            }
+        }
+    }
+
+    private func iconColor(for location: SavedLocation) -> Color {
+        switch location.label {
+        case "Home": return .blue
+        case "Work": return .purple
+        default: return .orange
         }
     }
 
