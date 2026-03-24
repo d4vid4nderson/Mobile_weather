@@ -60,6 +60,13 @@
 		A1003001 /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000200 /* WeatherModels.swift */; };
 		A1003101 /* WeatherIconMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000B00 /* WeatherIconMapper.swift */; };
 		A1003201 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000C00 /* DateFormatter+Extensions.swift */; };
+		/* Moon widget files in widget target */
+		A1004001 /* MoonPhaseCalculator+Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004000 /* MoonPhaseCalculator+Widget.swift */; };
+		A1004101 /* MoonTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004100 /* MoonTimelineEntry.swift */; };
+		A1004201 /* MoonTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004200 /* MoonTimelineProvider.swift */; };
+		A1004301 /* MoonWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004300 /* MoonWidget.swift */; };
+		A1004401 /* SmallMoonWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004400 /* SmallMoonWidgetView.swift */; };
+		A1004501 /* MediumMoonWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004500 /* MediumMoonWidgetView.swift */; };
 		/* Widget extension product embed */
 		A1003301 /* WeatherWiseWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A1003300 /* WeatherWiseWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -141,6 +148,13 @@
 		A1002E00 /* WeatherWiseWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherWiseWidget.entitlements; sourceTree = "<group>"; };
 		/* Widget Info.plist */
 		A1002F00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		/* Moon widget files */
+		A1004000 /* MoonPhaseCalculator+Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoonPhaseCalculator+Widget.swift"; sourceTree = "<group>"; };
+		A1004100 /* MoonTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonTimelineEntry.swift; sourceTree = "<group>"; };
+		A1004200 /* MoonTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonTimelineProvider.swift; sourceTree = "<group>"; };
+		A1004300 /* MoonWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonWidget.swift; sourceTree = "<group>"; };
+		A1004400 /* SmallMoonWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallMoonWidgetView.swift; sourceTree = "<group>"; };
+		A1004500 /* MediumMoonWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumMoonWidgetView.swift; sourceTree = "<group>"; };
 		/* Widget extension product */
 		A1003300 /* WeatherWiseWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherWiseWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -284,6 +298,12 @@
 				A1002A00 /* MediumWeatherWidgetView.swift */,
 				A1002B00 /* LargeWeatherWidgetView.swift */,
 				A1002C00 /* WidgetGradient.swift */,
+				A1004000 /* MoonPhaseCalculator+Widget.swift */,
+				A1004100 /* MoonTimelineEntry.swift */,
+				A1004200 /* MoonTimelineProvider.swift */,
+				A1004300 /* MoonWidget.swift */,
+				A1004400 /* SmallMoonWidgetView.swift */,
+				A1004500 /* MediumMoonWidgetView.swift */,
 				A1002E00 /* WeatherWiseWidget.entitlements */,
 				A1002F00 /* Info.plist */,
 			);
@@ -438,6 +458,12 @@
 				A1002A01 /* MediumWeatherWidgetView.swift in Sources */,
 				A1002B01 /* LargeWeatherWidgetView.swift in Sources */,
 				A1002C01 /* WidgetGradient.swift in Sources */,
+				A1004001 /* MoonPhaseCalculator+Widget.swift in Sources */,
+				A1004101 /* MoonTimelineEntry.swift in Sources */,
+				A1004201 /* MoonTimelineProvider.swift in Sources */,
+				A1004301 /* MoonWidget.swift in Sources */,
+				A1004401 /* SmallMoonWidgetView.swift in Sources */,
+				A1004501 /* MediumMoonWidgetView.swift in Sources */,
 				A1002D01 /* SharedConstants.swift in Sources */,
 				A1002E01 /* SharedWeatherData.swift in Sources */,
 				A1002F01 /* SharedWeatherService.swift in Sources */,
