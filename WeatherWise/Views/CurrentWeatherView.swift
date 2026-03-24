@@ -133,12 +133,57 @@ struct CurrentWeatherView: View {
             .buttonStyle(.plain)
 
             Button { selectedDetail = .sun } label: {
-                WeatherDetailCard(
-                    icon: "sun.max.fill",
-                    title: "SUNRISE / SUNSET",
-                    value: "\(viewModel.sunriseString) / \(viewModel.sunsetString)",
-                    subtitle: viewModel.daylightDurationString
-                )
+                VStack(alignment: .leading, spacing: 8) {
+                    Label {
+                        Text("SUNRISE / SUNSET")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientSecondary)
+                    } icon: {
+                        Image(systemName: "sun.max.fill")
+                            .font(.caption)
+                            .foregroundStyle(Color.onGradientSecondary)
+                    }
+
+                    HStack(spacing: 4) {
+                        Image(systemName: "sunrise.fill")
+                            .font(.caption)
+                            .foregroundStyle(.yellow.opacity(0.8))
+                        Text(viewModel.sunriseString)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientPrimary)
+
+                        Text("/")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientSecondary)
+
+                        Image(systemName: "sunset.fill")
+                            .font(.caption)
+                            .foregroundStyle(.orange.opacity(0.8))
+                        Text(viewModel.sunsetString)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientPrimary)
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                    Text(viewModel.daylightDurationString)
+                        .font(.caption)
+                        .foregroundStyle(Color.onGradientSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.onGradientCard)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
+                        )
+                }
             }
             .buttonStyle(.plain)
 
