@@ -58,7 +58,7 @@ struct LargeWeatherWidgetView: View {
 
             HStack(alignment: .firstTextBaseline) {
                 Text("\(temp)\(unitSymbol)")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .font(.system(size: 52, weight: .bold))
                     .foregroundStyle(.white)
 
                 Spacer()

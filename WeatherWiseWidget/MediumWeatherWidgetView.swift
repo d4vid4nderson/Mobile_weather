@@ -43,7 +43,7 @@ struct MediumWeatherWidgetView: View {
                 Spacer()
 
                 Text("\(temp)\(unitSymbol)")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.system(size: 40, weight: .bold))
                     .foregroundStyle(.white)
 
                 Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
