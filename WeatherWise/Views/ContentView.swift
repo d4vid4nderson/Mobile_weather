@@ -10,6 +10,7 @@ struct ContentView: View {
         ZStack {
             viewModel.backgroundGradient
                 .ignoresSafeArea()
+                .animation(.easeInOut(duration: 1.5), value: viewModel.currentWeather?.weather.first?.id)
 
             if viewModel.isLoading && viewModel.currentWeather == nil {
                 loadingView
