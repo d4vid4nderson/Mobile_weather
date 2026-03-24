@@ -54,6 +54,9 @@ final class WeatherViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var cityName: String = ""
     @Published var stateName: String = ""
+    /// Cached past forecast items from today (accumulated across refreshes)
+    @Published var cachedPastItems: [ForecastItem] = []
+    private var cachedDateKey: String = ""
     @Published var searchText: String = ""
     @Published var recentSearches: [String] = []
     @Published var citySuggestions: [GeocodingResult] = []
@@ -213,25 +216,15 @@ final class WeatherViewModel: ObservableObject {
         )
     }
 
-    /// Full hourly timeline: past items from today + "Now" + future items
+    /// Full hourly timeline: cached past items + "Now" + future items
     var fullHourlyTimeline: [HourlyDisplayItem] {
         guard let list = forecast?.list else { return [] }
         let now = Date().timeIntervalSince1970
-        let timezone = forecast?.city.timezone ?? 0
-
-        // Get today's date key
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone(secondsFromGMT: timezone)
-        let todayKey = formatter.string(from: Date())
 
         var items: [HourlyDisplayItem] = []
 
-        // Past forecast items from today
-        let pastItems = list.filter { item in
-            Double(item.dt) <= now && formatter.string(from: item.dt.asDate) == todayKey
-        }
-        for item in pastItems {
+        // Past items from cache (accumulated across refreshes throughout the day)
+        for item in cachedPastItems {
             let icon = item.weather.first.map {
                 WeatherIconMapper.sfSymbol(for: $0.id, icon: $0.icon)
             } ?? "sun.max.fill"
@@ -239,7 +232,7 @@ final class WeatherViewModel: ObservableObject {
                 id: item.dt,
                 timestamp: item.dt,
                 forecastTemp: item.main.temp,
-                actualTemp: item.main.temp, // Past forecast = what actually happened
+                actualTemp: item.main.temp,
                 icon: icon,
                 pop: item.pop,
                 isPast: true,
@@ -430,6 +423,7 @@ final class WeatherViewModel: ObservableObject {
             self.forecast = forecastResult
             self.airQuality = aq
             self.cityName = weather.name
+            cachePastForecastItems(from: forecastResult)
 
             // Reverse geocode to get state name
             if let geo = try? await weatherService.reverseGeocode(lat: lat, lon: lon) {
@@ -586,6 +580,34 @@ final class WeatherViewModel: ObservableObject {
             return []
         }
         return locations
+    }
+
+    // MARK: - Past Forecast Caching
+
+    private func cachePastForecastItems(from forecast: ForecastResponse) {
+        let timezone = forecast.city.timezone ?? 0
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(secondsFromGMT: timezone)
+        let todayKey = formatter.string(from: Date())
+
+        // Reset cache if it's a new day
+        if cachedDateKey != todayKey {
+            cachedPastItems = []
+            cachedDateKey = todayKey
+        }
+
+        let now = Date().timeIntervalSince1970
+
+        // Add any items from today that are in the past and not already cached
+        let existingTimestamps = Set(cachedPastItems.map(\.dt))
+        let newPastItems = forecast.list.filter { item in
+            Double(item.dt) <= now &&
+            formatter.string(from: item.dt.asDate) == todayKey &&
+            !existingTimestamps.contains(item.dt)
+        }
+        cachedPastItems.append(contentsOf: newPastItems)
+        cachedPastItems.sort { $0.dt < $1.dt }
     }
 
     func refresh() async {
