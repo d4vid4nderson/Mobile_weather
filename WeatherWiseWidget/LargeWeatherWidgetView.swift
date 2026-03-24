@@ -36,49 +36,105 @@ struct LargeWeatherWidgetView: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
-            // Top: current conditions (matching small widget layout)
+        VStack(alignment: .leading, spacing: 6) {
+            // MARK: - Header: city + condition
             HStack(spacing: 4) {
                 Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 20))
+                    .font(.system(size: 16))
                 Text(snapshot.cityName)
-                    .font(.headline)
+                    .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
-                    .lineLimit(2)
+                    .lineLimit(1)
             }
 
-            Text("\(temp)")
-                .font(.system(size: 64, weight: .heavy))
-                .foregroundStyle(.white)
-                .minimumScaleFactor(0.6)
+            // MARK: - Temperature + description
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text("\(temp)\u{00B0}")
+                    .font(.system(size: 48, weight: .heavy))
+                    .foregroundStyle(.white)
+                    .minimumScaleFactor(0.7)
 
-            Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.8))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(snapshot.conditionDescription)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.white.opacity(0.9))
+                        .lineLimit(1)
+                    Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
 
-            Divider()
-                .overlay(.white.opacity(0.3))
+            // MARK: - Stats row
+            HStack(spacing: 16) {
+                Label {
+                    Text("\(snapshot.humidity)%")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.8))
+                } icon: {
+                    Image(systemName: "humidity.fill")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                }
 
-            // Bottom: 5-day forecast
-            VStack(spacing: 6) {
-                ForEach(snapshot.dailyForecast.prefix(5)) { day in
-                    HStack(spacing: 8) {
-                        Text(day.dayName)
-                            .font(.subheadline)
+                Label {
+                    Text(String(format: "%.0f mph", snapshot.windSpeed))
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.8))
+                } icon: {
+                    Image(systemName: "wind")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                }
+            }
+
+            // MARK: - Hourly forecast
+            Divider().overlay(.white.opacity(0.3))
+
+            HStack(spacing: 0) {
+                ForEach(snapshot.hourlyForecast.prefix(4)) { hour in
+                    VStack(spacing: 4) {
+                        Text(Date(timeIntervalSince1970: TimeInterval(hour.dt))
+                            .formattedHour(timezoneOffset: snapshot.timezone))
+                            .font(.caption2)
+                            .foregroundStyle(.white.opacity(0.7))
+
+                        Image(systemName: WeatherIconMapper.sfSymbol(for: hour.conditionId, icon: hour.conditionIcon))
+                            .symbolRenderingMode(.multicolor)
+                            .font(.caption)
+
+                        Text("\(convertTemperature(hour.temp, to: entry.temperatureUnit))\u{00B0}")
+                            .font(.caption)
+                            .fontWeight(.semibold)
                             .foregroundStyle(.white)
-                            .frame(width: 36, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+
+            // MARK: - Daily forecast
+            Divider().overlay(.white.opacity(0.3))
+
+            VStack(spacing: 4) {
+                ForEach(snapshot.dailyForecast.prefix(5)) { day in
+                    HStack(spacing: 6) {
+                        Text(day.dayName)
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                            .frame(width: 30, alignment: .leading)
 
                         Image(systemName: WeatherIconMapper.sfSymbol(for: day.conditionId, icon: day.conditionIcon))
                             .symbolRenderingMode(.multicolor)
-                            .font(.subheadline)
-                            .frame(width: 24)
+                            .font(.caption)
+                            .frame(width: 20)
 
                         Text("\(convertTemperature(day.lowTemp, to: entry.temperatureUnit))\u{00B0}")
-                            .font(.subheadline)
+                            .font(.caption)
                             .foregroundStyle(.white.opacity(0.6))
-                            .frame(width: 32, alignment: .trailing)
+                            .frame(width: 28, alignment: .trailing)
 
                         // Gradient temperature bar
                         GeometryReader { geometry in
@@ -95,21 +151,22 @@ struct LargeWeatherWidgetView: View {
                                         endPoint: .trailing
                                     )
                                 )
-                                .frame(height: 5)
+                                .frame(height: 4)
                                 .padding(.leading, leftOffset)
                                 .padding(.trailing, rightOffset)
                                 .frame(maxHeight: .infinity, alignment: .center)
                         }
-                        .frame(height: 16)
+                        .frame(height: 14)
 
                         Text("\(convertTemperature(day.highTemp, to: entry.temperatureUnit))\u{00B0}")
-                            .font(.subheadline)
+                            .font(.caption)
                             .foregroundStyle(.white)
-                            .frame(width: 32, alignment: .trailing)
+                            .frame(width: 28, alignment: .trailing)
                     }
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(for: .widget) {
             weatherGradient(for: snapshot.conditionId, icon: snapshot.conditionIcon)
         }
