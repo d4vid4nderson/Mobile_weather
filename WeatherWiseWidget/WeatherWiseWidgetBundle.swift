@@ -5,5 +5,6 @@ import WidgetKit
 struct WeatherWiseWidgetBundle: WidgetBundle {
     var body: some Widget {
         WeatherWidget()
+        MoonWidget()
     }
 }
