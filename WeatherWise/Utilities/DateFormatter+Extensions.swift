@@ -9,6 +9,7 @@ extension Date {
     /// Formats as hour string, e.g. "2 PM"
     func formattedHour(timezoneOffset: Int = 0) -> String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "h a"
         formatter.timeZone = TimeZone(secondsFromGMT: timezoneOffset)
         return formatter.string(from: self)

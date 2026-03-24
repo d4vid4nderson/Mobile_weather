@@ -66,17 +66,17 @@ struct MediumWeatherWidgetView: View {
                     HStack(spacing: 8) {
                         Text(Date(timeIntervalSince1970: TimeInterval(hour.dt))
                             .formattedHour(timezoneOffset: snapshot.timezone))
-                            .font(.caption2)
+                            .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.8))
-                            .frame(width: 40, alignment: .leading)
+                            .frame(width: 50, alignment: .leading)
 
                         Image(systemName: WeatherIconMapper.sfSymbol(for: hour.conditionId, icon: hour.conditionIcon))
                             .symbolRenderingMode(.multicolor)
-                            .font(.caption)
+                            .font(.subheadline)
 
                         Text("\(convertTemperature(hour.temp, to: entry.temperatureUnit))\u{00B0}")
-                            .font(.caption)
-                            .fontWeight(.medium)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
                             .foregroundStyle(.white)
                     }
                 }
