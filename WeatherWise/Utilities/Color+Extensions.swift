@@ -58,22 +58,39 @@ extension Color {
     })
 
     // MARK: - On-Gradient Colors (Weather Tab)
-    // Always light — used on the colored weather gradient background
+    // Adapt to dark/light mode for contrast against the themed gradient
 
-    /// Primary text on gradient: soft white
-    static let onGradientPrimary = Color(white: 0.95)
+    /// Primary text on gradient: bright white in dark, deep charcoal in light
+    static let onGradientPrimary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.95, alpha: 1.0)
+            : UIColor(white: 1.0, alpha: 1.0)
+    })
 
-    /// Secondary text on gradient: muted white
-    static let onGradientSecondary = Color(white: 0.78)
+    /// Secondary text on gradient: muted white in dark, semi-transparent dark in light
+    static let onGradientSecondary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.75, alpha: 1.0)
+            : UIColor(white: 0.92, alpha: 1.0)
+    })
+
+    /// Card overlay on gradient: more opaque in dark for separation, lighter in light
+    static let onGradientCard = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.0, alpha: 0.25)
+            : UIColor(white: 1.0, alpha: 0.20)
+    })
 }
 
 // MARK: - Weather Gradients
 struct WeatherGradients {
-    static func background(for conditionId: Int, isDaytime: Bool) -> LinearGradient {
+    static func background(for conditionId: Int, isDaytime: Bool, darkMode: Bool = false) -> LinearGradient {
         let colors: [Color]
 
         if !isDaytime {
             colors = nightColors(for: conditionId)
+        } else if darkMode {
+            colors = dayDarkModeColors(for: conditionId)
         } else {
             colors = dayColors(for: conditionId)
         }
@@ -85,6 +102,7 @@ struct WeatherGradients {
         )
     }
 
+    // MARK: - Light mode day gradients (bright, vivid)
     private static func dayColors(for conditionId: Int) -> [Color] {
         switch conditionId {
         case 200...232: // Thunderstorm
@@ -105,6 +123,30 @@ struct WeatherGradients {
             return [Color(red: 0.4, green: 0.45, blue: 0.55), .weatherCloudy, Color(red: 0.35, green: 0.4, blue: 0.5)]
         default:
             return [.weatherBlue, .weatherDarkBlue]
+        }
+    }
+
+    // MARK: - Dark mode day gradients (deeper, moodier versions)
+    private static func dayDarkModeColors(for conditionId: Int) -> [Color] {
+        switch conditionId {
+        case 200...232: // Thunderstorm
+            return [Color(red: 0.08, green: 0.05, blue: 0.15), Color(red: 0.14, green: 0.08, blue: 0.25), Color(red: 0.06, green: 0.04, blue: 0.12)]
+        case 300...321: // Drizzle
+            return [Color(red: 0.18, green: 0.24, blue: 0.32), Color(red: 0.14, green: 0.20, blue: 0.30), Color(red: 0.12, green: 0.18, blue: 0.28)]
+        case 500...531: // Rain
+            return [Color(red: 0.10, green: 0.13, blue: 0.24), Color(red: 0.13, green: 0.16, blue: 0.30), Color(red: 0.08, green: 0.10, blue: 0.20)]
+        case 600...622: // Snow
+            return [Color(red: 0.30, green: 0.33, blue: 0.48), Color(red: 0.24, green: 0.27, blue: 0.42), Color(red: 0.20, green: 0.22, blue: 0.36)]
+        case 700...781: // Atmosphere
+            return [Color(red: 0.24, green: 0.24, blue: 0.30), Color(red: 0.20, green: 0.22, blue: 0.28), Color(red: 0.16, green: 0.18, blue: 0.24)]
+        case 800: // Clear
+            return [Color(red: 0.04, green: 0.18, blue: 0.52), Color(red: 0.06, green: 0.24, blue: 0.50), Color(red: 0.10, green: 0.30, blue: 0.55)]
+        case 801...802: // Few/Scattered Clouds
+            return [Color(red: 0.12, green: 0.24, blue: 0.44), Color(red: 0.18, green: 0.26, blue: 0.38), Color(red: 0.14, green: 0.24, blue: 0.38)]
+        case 803...804: // Broken/Overcast Clouds
+            return [Color(red: 0.18, green: 0.20, blue: 0.28), Color(red: 0.22, green: 0.24, blue: 0.32), Color(red: 0.16, green: 0.18, blue: 0.26)]
+        default:
+            return [Color(red: 0.06, green: 0.16, blue: 0.40), .weatherDarkBlue]
         }
     }
 
