@@ -299,7 +299,7 @@ struct RadarView: View {
     )
 
     // API Key - reads from WeatherService or uses placeholder
-    private let apiKey = "YOUR_API_KEY"
+    private let apiKey = "39029bf0c1f9bc244377f3e8c16de220"
 
     var body: some View {
         ZStack(alignment: .top) {
