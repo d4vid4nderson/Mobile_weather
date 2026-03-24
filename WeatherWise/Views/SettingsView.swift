@@ -9,7 +9,7 @@ struct SettingsView: View {
             VStack(spacing: 0) {
                 Text("Settings")
                     .font(.system(size: 28, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .padding(.top, 70)
                     .padding(.bottom, 28)
 
@@ -81,7 +81,7 @@ struct SettingsView: View {
                     SettingsIconBadge(icon: "circle.lefthalf.filled", color: .purple)
                     Text("Theme")
                         .font(.body)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Spacer()
                 }
 
@@ -212,7 +212,7 @@ private struct SettingsRow: View {
 
             Text(title)
                 .font(.body)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             Spacer()
 
@@ -253,7 +253,7 @@ private struct SettingsMenuRow<T: Hashable & RawRepresentable>: View where T.Raw
 
             Text(title)
                 .font(.body)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             Spacer()
 
@@ -286,10 +286,6 @@ private struct SettingsMenuRow<T: Hashable & RawRepresentable>: View where T.Raw
 }
 
 #Preview {
-    ZStack {
-        Color.black.ignoresSafeArea()
-        SettingsView()
-            .environmentObject(WeatherViewModel())
-    }
-    .preferredColorScheme(.dark)
+    SettingsView()
+        .environmentObject(WeatherViewModel())
 }

@@ -20,7 +20,6 @@ struct ContentView: View {
             }
         }
         .preferredColorScheme(viewModel.appearance.colorScheme)
-        .environment(\.colorScheme, .dark)
         .onAppear {
             viewModel.fetchWeather()
         }
@@ -47,6 +46,7 @@ struct ContentView: View {
                 .tag(0)
 
             radarTab
+                .environment(\.colorScheme, .dark)
                 .tabItem {
                     Image(systemName: "map.fill")
                     Text("Radar")
@@ -54,6 +54,7 @@ struct ContentView: View {
                 .tag(1)
 
             alertsTab
+                .environment(\.colorScheme, .dark)
                 .tabItem {
                     Image(systemName: "exclamationmark.triangle.fill")
                     Text("Alerts")
@@ -72,7 +73,6 @@ struct ContentView: View {
                 }
                 .tag(3)
         }
-        .tint(.white)
         .overlay(alignment: .topTrailing) {
             if selectedTab == 0 {
                 searchButton
@@ -140,7 +140,7 @@ struct ContentView: View {
             Image(systemName: "magnifyingglass")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -155,7 +155,7 @@ struct ContentView: View {
             Image(systemName: "location.fill")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .padding(12)
                 .background(.ultraThinMaterial, in: Circle())
         }
@@ -173,7 +173,7 @@ struct ContentView: View {
                 Text("Wise Co.")
                     .font(.caption2.bold())
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(.primary)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .background(.ultraThinMaterial, in: Capsule())
@@ -187,13 +187,12 @@ struct ContentView: View {
         VStack(spacing: 20) {
             ProgressView()
                 .scaleEffect(1.5)
-                .tint(.white)
             Text("Loading Weather Wise...")
                 .font(.headline)
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(.primary.opacity(0.8))
             Text("Wise County, Texas")
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.5))
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -205,11 +204,11 @@ struct ContentView: View {
 
             Text("Unable to Load Weather")
                 .font(.title2.bold())
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
 
             Text(message)
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
 
@@ -218,7 +217,7 @@ struct ContentView: View {
             } label: {
                 Label("Try Again", systemImage: "arrow.clockwise")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())
@@ -229,7 +228,7 @@ struct ContentView: View {
             } label: {
                 Label("Search City", systemImage: "magnifyingglass")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
                     .background(.ultraThinMaterial, in: Capsule())
