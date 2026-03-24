@@ -145,7 +145,7 @@ struct MoonArcView: View {
                 .font(.system(size: 8, weight: .medium))
                 .foregroundStyle(Color.onGradientSecondary)
         }
-        .position(x: px.clamped(to: 20...(rect.width - 20)), y: py + 22)
+        .position(x: px.clamped(to: 0...max(rect.width, 1)), y: py + 22)
     }
 
     // MARK: - Current Position
