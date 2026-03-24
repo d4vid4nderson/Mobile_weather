@@ -401,6 +401,17 @@ struct RadarView: View {
             )
             .ignoresSafeArea()
 
+            // MARK: - Wind Arrow Overlay (only when wind layer active)
+            if selectedLayer == .wind {
+                WindArrowOverlayView(
+                    windDeg: Double(viewModel.currentWeather?.wind.deg ?? 0),
+                    windSpeed: viewModel.currentWeather?.wind.speed ?? 0
+                )
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .animation(.easeInOut(duration: 0.4), value: selectedLayer)
+            }
+
             // MARK: - Overlay Controls
             VStack(spacing: 0) {
                 // Quick location bar at top
@@ -676,6 +687,30 @@ struct RadarView: View {
                 }
             }
 
+            // Wind direction indicator
+            if selectedLayer == .wind, let deg = viewModel.currentWeather?.wind.deg {
+                Divider()
+                    .background(Color.white.opacity(0.3))
+                HStack(spacing: 8) {
+                    // Animated rotating arrow
+                    Image(systemName: "location.north.fill")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                        .rotationEffect(.degrees(Double(deg) + 180)) // point where wind goes TO
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Wind from \(windCompassLabel(deg))")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.white)
+                        if viewModel.currentWeather?.wind.speed != nil {
+                            Text(viewModel.windSpeedString)
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                    }
+                    Spacer()
+                }
+            }
+
             // Storm alerts indicator
             if !stormAnnotations.isEmpty {
                 Divider()
@@ -733,6 +768,13 @@ struct RadarView: View {
         return city
             .replacingOccurrences(of: "County", with: "Co.")
             .trimmingCharacters(in: .whitespaces)
+    }
+
+    private func windCompassLabel(_ degrees: Int) -> String {
+        let dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                    "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        let index = Int((Double(degrees) + 11.25).truncatingRemainder(dividingBy: 360) / 22.5)
+        return dirs[index % 16]
     }
 
     private func loadStormAnnotations() {

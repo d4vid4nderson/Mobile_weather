@@ -35,6 +35,7 @@
 		A1001B01 /* DropletsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001B00 /* DropletsView.swift */; };
 		A1001C01 /* WeatherEffectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001C00 /* WeatherEffectsView.swift */; };
 		A1001D01 /* WindGustView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001D00 /* WindGustView.swift */; };
+		A1001E01 /* WindArrowOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001E00 /* WindArrowOverlayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		A1001B00 /* DropletsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropletsView.swift; sourceTree = "<group>"; };
 		A1001C00 /* WeatherEffectsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherEffectsView.swift; sourceTree = "<group>"; };
 		A1001D00 /* WindGustView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindGustView.swift; sourceTree = "<group>"; };
+		A1001E00 /* WindArrowOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindArrowOverlayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				A1001B00 /* DropletsView.swift */,
 				A1001C00 /* WeatherEffectsView.swift */,
 				A1001D00 /* WindGustView.swift */,
+				A1001E00 /* WindArrowOverlayView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				A1001B01 /* DropletsView.swift in Sources */,
 				A1001C01 /* WeatherEffectsView.swift in Sources */,
 				A1001D01 /* WindGustView.swift in Sources */,
+				A1001E01 /* WindArrowOverlayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
