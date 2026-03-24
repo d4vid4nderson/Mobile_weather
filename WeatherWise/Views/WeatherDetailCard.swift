@@ -34,7 +34,7 @@ struct WeatherDetailCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
     }
 }
 

@@ -98,7 +98,7 @@ struct ForecastView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
-        .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
     }
 
     // MARK: - Hourly Forecast
@@ -121,7 +121,7 @@ struct ForecastView: View {
             }
         }
         .padding(.vertical, 16)
-        .background(.ultraThinMaterial.opacity(0.5))
+        .background(Color.white.opacity(0.15))
     }
 
     private func hourlyItemView(_ item: ForecastItem) -> some View {
@@ -171,7 +171,7 @@ struct ForecastView: View {
             }
         }
         .padding(16)
-        .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
     }
 
     private func dailyRow(_ day: DailyForecast) -> some View {
