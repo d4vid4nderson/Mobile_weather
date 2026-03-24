@@ -9,6 +9,7 @@ enum WeatherLayer: String, CaseIterable, Identifiable {
     case clouds = "clouds_new"
     case temperature = "temp_new"
     case wind = "wind_new"
+    case humidity = "humidity_new"
     case pressure = "pressure_new"
 
     var id: String { rawValue }
@@ -19,6 +20,7 @@ enum WeatherLayer: String, CaseIterable, Identifiable {
         case .clouds: return "Clouds"
         case .temperature: return "Temp"
         case .wind: return "Wind"
+        case .humidity: return "Humidity"
         case .pressure: return "Pressure"
         }
     }
@@ -29,6 +31,7 @@ enum WeatherLayer: String, CaseIterable, Identifiable {
         case .clouds: return "cloud.fill"
         case .temperature: return "thermometer.medium"
         case .wind: return "wind"
+        case .humidity: return "humidity.fill"
         case .pressure: return "gauge.medium"
         }
     }
@@ -39,6 +42,7 @@ enum WeatherLayer: String, CaseIterable, Identifiable {
         case .clouds: return "Cloud Coverage"
         case .temperature: return "Temperature"
         case .wind: return "Wind Speed"
+        case .humidity: return "Relative Humidity"
         case .pressure: return "Atmospheric Pressure"
         }
     }
@@ -76,6 +80,14 @@ enum WeatherLayer: String, CaseIterable, Identifiable {
                 ("Moderate", Color(red: 0.95, green: 0.9, blue: 0.3)),
                 ("Strong", Color(red: 0.95, green: 0.5, blue: 0.2)),
                 ("Severe", Color(red: 0.9, green: 0.15, blue: 0.15))
+            ]
+        case .humidity:
+            return [
+                ("Dry", Color(red: 0.95, green: 0.85, blue: 0.6)),
+                ("Low", Color(red: 0.7, green: 0.9, blue: 0.5)),
+                ("Moderate", Color(red: 0.3, green: 0.8, blue: 0.6)),
+                ("High", Color(red: 0.2, green: 0.5, blue: 0.9)),
+                ("Saturated", Color(red: 0.1, green: 0.2, blue: 0.7))
             ]
         case .pressure:
             return [
@@ -127,6 +139,13 @@ final class StormPointAnnotation: MKPointAnnotation {
     var annotationId: UUID = UUID()
 }
 
+// MARK: - Saved Location Pin Annotation
+
+final class SavedLocationAnnotation: MKPointAnnotation {
+    var label: String = ""
+    var iconName: String = "mappin.circle.fill"
+}
+
 // MARK: - WeatherMapView (UIViewRepresentable)
 
 struct WeatherMapView: UIViewRepresentable {
@@ -134,6 +153,10 @@ struct WeatherMapView: UIViewRepresentable {
     let overlayOpacity: Double
     let apiKey: String
     let stormAnnotations: [StormAnnotation]
+    let savedLocations: [SavedLocation]
+    let defaultLocationName: String
+    let defaultLocationLat: Double
+    let defaultLocationLon: Double
     let centerCoordinate: CLLocationCoordinate2D
     let regionSpan: MKCoordinateSpan
 
@@ -156,6 +179,7 @@ struct WeatherMapView: UIViewRepresentable {
 
         addTileOverlay(to: map, layer: selectedLayer, apiKey: apiKey, opacity: overlayOpacity)
         addStormAnnotations(to: map, annotations: stormAnnotations)
+        addSavedLocationPins(to: map)
 
         DispatchQueue.main.async {
             self.mapView = map
@@ -173,9 +197,14 @@ struct WeatherMapView: UIViewRepresentable {
         addTileOverlay(to: mapView, layer: selectedLayer, apiKey: apiKey, opacity: overlayOpacity)
 
         // Update storm annotations
-        let existingAnnotations = mapView.annotations.filter { $0 is StormPointAnnotation }
-        mapView.removeAnnotations(existingAnnotations)
+        let existingStorm = mapView.annotations.filter { $0 is StormPointAnnotation }
+        mapView.removeAnnotations(existingStorm)
         addStormAnnotations(to: mapView, annotations: stormAnnotations)
+
+        // Update saved location pins
+        let existingSaved = mapView.annotations.filter { $0 is SavedLocationAnnotation }
+        mapView.removeAnnotations(existingSaved)
+        addSavedLocationPins(to: mapView)
 
         // Update coordinator state
         context.coordinator.currentOpacity = overlayOpacity
@@ -206,6 +235,27 @@ struct WeatherMapView: UIViewRepresentable {
             annotation.severity = storm.severity
             annotation.annotationId = storm.id
             mapView.addAnnotation(annotation)
+        }
+    }
+
+    private func addSavedLocationPins(to mapView: MKMapView) {
+        // Default location pin
+        let defaultPin = SavedLocationAnnotation()
+        defaultPin.coordinate = CLLocationCoordinate2D(latitude: defaultLocationLat, longitude: defaultLocationLon)
+        defaultPin.title = defaultLocationName
+        defaultPin.label = "Default"
+        defaultPin.iconName = "mappin.circle.fill"
+        mapView.addAnnotation(defaultPin)
+
+        // Saved location pins
+        for location in savedLocations {
+            let pin = SavedLocationAnnotation()
+            pin.coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+            pin.title = location.cityName
+            pin.subtitle = location.label
+            pin.label = location.label
+            pin.iconName = location.iconName
+            mapView.addAnnotation(pin)
         }
     }
 
@@ -260,6 +310,37 @@ struct WeatherMapView: UIViewRepresentable {
                 return annotationView
             }
 
+            if let savedAnnotation = annotation as? SavedLocationAnnotation {
+                let identifier = "SavedLocationPin"
+                var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+
+                if annotationView == nil {
+                    annotationView = MKMarkerAnnotationView(annotation: savedAnnotation, reuseIdentifier: identifier)
+                    annotationView?.canShowCallout = true
+                } else {
+                    annotationView?.annotation = savedAnnotation
+                }
+
+                switch savedAnnotation.label {
+                case "Home":
+                    annotationView?.markerTintColor = .systemBlue
+                    annotationView?.glyphImage = UIImage(systemName: "house.fill")
+                case "Work":
+                    annotationView?.markerTintColor = .systemPurple
+                    annotationView?.glyphImage = UIImage(systemName: "briefcase.fill")
+                case "Default":
+                    annotationView?.markerTintColor = .systemGreen
+                    annotationView?.glyphImage = UIImage(systemName: "mappin.circle.fill")
+                default:
+                    annotationView?.markerTintColor = .systemOrange
+                    annotationView?.glyphImage = UIImage(systemName: "mappin.circle.fill")
+                }
+
+                annotationView?.displayPriority = .required
+                annotationView?.titleVisibility = .adaptive
+                return annotationView
+            }
+
             return nil
         }
 
@@ -285,6 +366,7 @@ struct RadarView: View {
     @State private var selectedLayer: WeatherLayer = .precipitation
     @State private var overlayOpacity: Double = 0.6
     @State private var showLegend: Bool = true
+    @State private var showLayerPicker: Bool = false
     @State private var mapView: MKMapView?
     @State private var stormAnnotations: [StormAnnotation] = []
 
@@ -309,6 +391,10 @@ struct RadarView: View {
                 overlayOpacity: overlayOpacity,
                 apiKey: apiKey,
                 stormAnnotations: stormAnnotations,
+                savedLocations: viewModel.savedLocations,
+                defaultLocationName: viewModel.defaultLocationName,
+                defaultLocationLat: viewModel.defaultLocationLat,
+                defaultLocationLon: viewModel.defaultLocationLon,
                 centerCoordinate: wiseCountyCenter,
                 regionSpan: defaultSpan,
                 mapView: $mapView
@@ -317,17 +403,24 @@ struct RadarView: View {
 
             // MARK: - Overlay Controls
             VStack(spacing: 0) {
-                // Layer selector
-                layerSelectorBar
+                // Quick location bar at top
+                radarLocationBar
                     .padding(.top, 8)
 
                 Spacer()
 
                 // Bottom controls
                 VStack(spacing: 12) {
-                    // Map action buttons
-                    actionButtonsRow
+                    // Right-aligned buttons: Layers, Reset, Info
+                    bottomButtonsRow
                         .padding(.horizontal)
+
+                    // Layer picker sheet
+                    if showLayerPicker {
+                        layerPickerGrid
+                            .padding(.horizontal)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
 
                     // Opacity slider
                     opacitySlider
@@ -347,104 +440,170 @@ struct RadarView: View {
         }
     }
 
-    // MARK: - Layer Selector Bar
+    // MARK: - Radar Location Bar
 
-    private var layerSelectorBar: some View {
+    private var radarLocationBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(WeatherLayer.allCases) { layer in
+            HStack(spacing: 8) {
+                // Current location
+                Button {
+                    centerOnUserLocation()
+                } label: {
+                    Image(systemName: "location.fill")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .padding(10)
+                        .background(.ultraThinMaterial, in: Circle())
+                }
+
+                // Default location pill
+                Button {
+                    centerOnLocation(lat: viewModel.defaultLocationLat, lon: viewModel.defaultLocationLon)
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.caption)
+                        Text(shortLocationName(viewModel.defaultLocationName))
+                            .font(.caption2.bold())
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(.ultraThinMaterial, in: Capsule())
+                }
+
+                // Saved locations
+                ForEach(viewModel.savedLocations) { location in
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            selectedLayer = layer
-                        }
+                        centerOnLocation(lat: location.latitude, lon: location.longitude)
                     } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: layer.icon)
-                                .font(.system(size: 14, weight: .semibold))
-                            Text(layer.displayName)
-                                .font(.system(size: 13, weight: .semibold))
+                        HStack(spacing: 4) {
+                            Image(systemName: location.iconName)
+                                .font(.caption)
+                            Text(location.label)
+                                .font(.caption2.bold())
                         }
-                        .foregroundColor(selectedLayer == layer ? .white : .white.opacity(0.7))
-                        .padding(.horizontal, 14)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
                         .padding(.vertical, 8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(selectedLayer == layer
-                                      ? Color.blue.opacity(0.8)
-                                      : Color.clear)
-                        )
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.ultraThinMaterial)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .background(.ultraThinMaterial, in: Capsule())
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.leading, 16)
+            .padding(.trailing, 8)
         }
     }
 
-    // MARK: - Action Buttons
+    // MARK: - Bottom Buttons
 
-    private var actionButtonsRow: some View {
-        HStack(spacing: 12) {
+    private var bottomButtonsRow: some View {
+        HStack(spacing: 10) {
+            // Active layer indicator
+            HStack(spacing: 6) {
+                Image(systemName: selectedLayer.icon)
+                    .font(.system(size: 14, weight: .semibold))
+                Text(selectedLayer.displayName)
+                    .font(.system(size: 13, weight: .semibold))
+            }
+            .foregroundColor(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.blue.opacity(0.6))
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.ultraThinMaterial)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            )
+
             Spacer()
 
-            // Wise County button
+            // Reset map
             Button {
-                centerOnWiseCounty()
+                resetMap()
             } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "mappin.circle.fill")
-                        .font(.system(size: 16))
-                    Text("Wise County")
-                        .font(.system(size: 13, weight: .semibold))
-                }
-                .foregroundColor(.white)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                )
+                Image(systemName: "arrow.counterclockwise")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(10)
+                    .background(Circle().fill(.ultraThinMaterial))
             }
 
-            // My Location button
+            // Layers button
             Button {
-                centerOnUserLocation()
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "location.fill")
-                        .font(.system(size: 16))
-                    Text("My Location")
-                        .font(.system(size: 13, weight: .semibold))
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    showLayerPicker.toggle()
                 }
-                .foregroundColor(.white)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                )
+            } label: {
+                Image(systemName: "square.3.layers.3d")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(10)
+                    .background(Circle().fill(.ultraThinMaterial))
             }
 
-            // Toggle legend
+            // Toggle legend / info
             Button {
                 withAnimation(.easeInOut(duration: 0.25)) {
                     showLegend.toggle()
                 }
             } label: {
                 Image(systemName: showLegend ? "info.circle.fill" : "info.circle")
-                    .font(.system(size: 20))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
                     .padding(10)
-                    .background(
-                        Circle()
-                            .fill(.ultraThinMaterial)
-                    )
+                    .background(Circle().fill(.ultraThinMaterial))
             }
         }
+    }
+
+    // MARK: - Layer Picker Grid
+
+    private var layerPickerGrid: some View {
+        LazyVGrid(columns: [
+            GridItem(.flexible(), spacing: 8),
+            GridItem(.flexible(), spacing: 8),
+            GridItem(.flexible(), spacing: 8)
+        ], spacing: 8) {
+            ForEach(WeatherLayer.allCases) { layer in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selectedLayer = layer
+                        showLayerPicker = false
+                    }
+                } label: {
+                    VStack(spacing: 6) {
+                        Image(systemName: layer.icon)
+                            .font(.system(size: 22))
+                        Text(layer.displayName)
+                            .font(.system(size: 11, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(selectedLayer == layer
+                                  ? Color.blue.opacity(0.7)
+                                  : Color.white.opacity(0.1))
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.ultraThinMaterial)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
     }
 
     // MARK: - Opacity Slider
@@ -542,7 +701,25 @@ struct RadarView: View {
 
     // MARK: - Actions
 
-    private func centerOnWiseCounty() {
+    private func centerOnLocation(lat: Double, lon: Double, span: MKCoordinateSpan? = nil) {
+        guard let map = mapView else { return }
+        let region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+            span: span ?? MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        )
+        map.setRegion(region, animated: true)
+    }
+
+    private func centerOnUserLocation() {
+        guard let map = mapView else { return }
+        if let userLocation = map.userLocation.location {
+            centerOnLocation(lat: userLocation.coordinate.latitude, lon: userLocation.coordinate.longitude)
+        } else if let location = viewModel.locationManager.location {
+            centerOnLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
+        }
+    }
+
+    private func resetMap() {
         guard let map = mapView else { return }
         let region = MKCoordinateRegion(
             center: wiseCountyCenter,
@@ -551,21 +728,11 @@ struct RadarView: View {
         map.setRegion(region, animated: true)
     }
 
-    private func centerOnUserLocation() {
-        guard let map = mapView else { return }
-        if let userLocation = map.userLocation.location {
-            let region = MKCoordinateRegion(
-                center: userLocation.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
-            )
-            map.setRegion(region, animated: true)
-        } else if let location = viewModel.locationManager.location {
-            let region = MKCoordinateRegion(
-                center: location.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
-            )
-            map.setRegion(region, animated: true)
-        }
+    private func shortLocationName(_ name: String) -> String {
+        let city = name.components(separatedBy: ",").first ?? name
+        return city
+            .replacingOccurrences(of: "County", with: "Co.")
+            .trimmingCharacters(in: .whitespaces)
     }
 
     private func loadStormAnnotations() {
