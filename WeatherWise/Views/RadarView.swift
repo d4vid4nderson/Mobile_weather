@@ -399,18 +399,18 @@ struct RadarView: View {
                 regionSpan: defaultSpan,
                 mapView: $mapView
             )
-            .ignoresSafeArea()
-
-            // MARK: - Wind Arrow Overlay (only when wind layer active)
-            if selectedLayer == .wind {
-                WindArrowOverlayView(
-                    windDeg: Double(viewModel.currentWeather?.wind.deg ?? 0),
-                    windSpeed: viewModel.currentWeather?.wind.speed ?? 0
-                )
-                .ignoresSafeArea()
-                .transition(.opacity)
-                .animation(.easeInOut(duration: 0.4), value: selectedLayer)
+            .overlay {
+                // MARK: - Wind Arrow Overlay (only when wind layer active)
+                if selectedLayer == .wind {
+                    WindArrowOverlayView(
+                        windDeg: Double(viewModel.currentWeather?.wind.deg ?? 0),
+                        windSpeed: viewModel.currentWeather?.wind.speed ?? 0
+                    )
+                    .transition(.opacity)
+                }
             }
+            .animation(.easeInOut(duration: 0.4), value: selectedLayer)
+            .ignoresSafeArea()
 
             // MARK: - Overlay Controls
             VStack(spacing: 0) {
