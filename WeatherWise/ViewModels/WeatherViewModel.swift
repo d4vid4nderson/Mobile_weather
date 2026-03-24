@@ -53,6 +53,7 @@ final class WeatherViewModel: ObservableObject {
     @Published var isLoadingAlerts = false
     @Published var errorMessage: String?
     @Published var cityName: String = ""
+    @Published var stateName: String = ""
     @Published var searchText: String = ""
     @Published var recentSearches: [String] = []
     @Published var citySuggestions: [GeocodingResult] = []
@@ -353,6 +354,13 @@ final class WeatherViewModel: ObservableObject {
             self.forecast = forecastResult
             self.airQuality = aq
             self.cityName = weather.name
+
+            // Reverse geocode to get state name
+            if let geo = try? await weatherService.reverseGeocode(lat: lat, lon: lon) {
+                self.stateName = geo.state ?? ""
+            } else {
+                self.stateName = ""
+            }
         } catch {
             self.errorMessage = error.localizedDescription
         }
@@ -381,9 +389,14 @@ final class WeatherViewModel: ObservableObject {
                 self.forecast = forecastResult
                 self.cityName = weather.name
 
-                // Fetch air quality with coordinates from response
+                // Fetch air quality and reverse geocode with coordinates from response
                 let coord = weather.coord
                 self.airQuality = try? await weatherService.fetchAirQuality(lat: coord.lat, lon: coord.lon)
+                if let geo = try? await weatherService.reverseGeocode(lat: coord.lat, lon: coord.lon) {
+                    self.stateName = geo.state ?? ""
+                } else {
+                    self.stateName = ""
+                }
 
                 addRecentSearch(trimmed)
             } catch {

@@ -87,6 +87,14 @@ actor WeatherService {
         return try await performRequest(urlString: urlString)
     }
 
+    // MARK: - Reverse Geocoding
+
+    func reverseGeocode(lat: Double, lon: Double) async throws -> GeocodingResult? {
+        let urlString = "\(geoBaseURL)/reverse?lat=\(lat)&lon=\(lon)&limit=1&appid=\(WeatherService.apiKey)"
+        let results: [GeocodingResult] = try await performRequest(urlString: urlString)
+        return results.first
+    }
+
     // MARK: - Air Quality
 
     func fetchAirQuality(lat: Double, lon: Double) async throws -> AirQualityResponse {

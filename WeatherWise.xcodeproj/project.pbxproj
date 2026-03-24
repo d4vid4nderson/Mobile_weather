@@ -30,6 +30,7 @@
 		A1001601 /* DefaultLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001600 /* DefaultLocationPicker.swift */; };
 		A1001701 /* SavedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001700 /* SavedLocation.swift */; };
 		A1001801 /* SavedLocationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001800 /* SavedLocationPicker.swift */; };
+		A1001901 /* WeatherDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001900 /* WeatherDetailSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		A1001600 /* DefaultLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLocationPicker.swift; sourceTree = "<group>"; };
 		A1001700 /* SavedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocation.swift; sourceTree = "<group>"; };
 		A1001800 /* SavedLocationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationPicker.swift; sourceTree = "<group>"; };
+		A1001900 /* WeatherDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 				A1001500 /* SettingsView.swift */,
 				A1001600 /* DefaultLocationPicker.swift */,
 				A1001800 /* SavedLocationPicker.swift */,
+				A1001900 /* WeatherDetailSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				A1001601 /* DefaultLocationPicker.swift in Sources */,
 				A1001701 /* SavedLocation.swift in Sources */,
 				A1001801 /* SavedLocationPicker.swift in Sources */,
+				A1001901 /* WeatherDetailSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

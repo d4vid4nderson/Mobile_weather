@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CurrentWeatherView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
+    @State private var selectedDetail: WeatherDetailType?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -33,12 +34,16 @@ struct CurrentWeatherView: View {
                 .font(.system(size: 34, weight: .medium, design: .rounded))
                 .foregroundStyle(Color.onGradientPrimary)
 
-            if !viewModel.countryCode.isEmpty {
+            if !viewModel.stateName.isEmpty || !viewModel.countryCode.isEmpty {
                 HStack(spacing: 4) {
-                    Text(viewModel.countryCode)
-                    if viewModel.cityName.lowercased().contains("decatur") ||
-                       viewModel.cityName.lowercased().contains("wise") {
-                        Text("- Wise County")
+                    if !viewModel.stateName.isEmpty {
+                        Text(viewModel.stateName)
+                        if viewModel.cityName.lowercased().contains("decatur") ||
+                           viewModel.cityName.lowercased().contains("wise") {
+                            Text("- Wise County")
+                        }
+                    } else {
+                        Text(viewModel.countryCode)
                     }
                 }
                 .font(.subheadline)
@@ -91,41 +96,65 @@ struct CurrentWeatherView: View {
             GridItem(.flexible(), spacing: 12),
             GridItem(.flexible(), spacing: 12)
         ], spacing: 12) {
-            WeatherDetailCard(
-                icon: "humidity.fill",
-                title: "HUMIDITY",
-                value: viewModel.humidityString
-            )
+            Button { selectedDetail = .humidity } label: {
+                WeatherDetailCard(
+                    icon: "humidity.fill",
+                    title: "HUMIDITY",
+                    value: viewModel.humidityString
+                )
+            }
+            .buttonStyle(.plain)
 
-            WeatherDetailCard(
-                icon: "wind",
-                title: "WIND",
-                value: viewModel.windSpeedString
-            )
+            Button { selectedDetail = .wind } label: {
+                WeatherDetailCard(
+                    icon: "wind",
+                    title: "WIND",
+                    value: viewModel.windSpeedString
+                )
+            }
+            .buttonStyle(.plain)
 
-            WeatherDetailCard(
-                icon: "gauge.medium",
-                title: "PRESSURE",
-                value: viewModel.pressureString
-            )
+            Button { selectedDetail = .pressure } label: {
+                WeatherDetailCard(
+                    icon: "gauge.medium",
+                    title: "PRESSURE",
+                    value: viewModel.pressureString
+                )
+            }
+            .buttonStyle(.plain)
 
-            WeatherDetailCard(
-                icon: "eye.fill",
-                title: "VISIBILITY",
-                value: viewModel.visibilityString
-            )
+            Button { selectedDetail = .visibility } label: {
+                WeatherDetailCard(
+                    icon: "eye.fill",
+                    title: "VISIBILITY",
+                    value: viewModel.visibilityString
+                )
+            }
+            .buttonStyle(.plain)
 
-            WeatherDetailCard(
-                icon: "sunrise.fill",
-                title: "SUNRISE",
-                value: viewModel.sunriseString
-            )
+            Button { selectedDetail = .sunrise } label: {
+                WeatherDetailCard(
+                    icon: "sunrise.fill",
+                    title: "SUNRISE",
+                    value: viewModel.sunriseString
+                )
+            }
+            .buttonStyle(.plain)
 
-            WeatherDetailCard(
-                icon: "sunset.fill",
-                title: "SUNSET",
-                value: viewModel.sunsetString
-            )
+            Button { selectedDetail = .sunset } label: {
+                WeatherDetailCard(
+                    icon: "sunset.fill",
+                    title: "SUNSET",
+                    value: viewModel.sunsetString
+                )
+            }
+            .buttonStyle(.plain)
+        }
+        .sheet(item: $selectedDetail) { detail in
+            WeatherDetailSheet(detailType: detail)
+                .environmentObject(viewModel)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 }
