@@ -25,9 +25,9 @@ struct SmallWeatherWidgetView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(spacing: 6) {
             Text(snapshot.cityName)
-                .font(.caption)
+                .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -41,14 +41,14 @@ struct SmallWeatherWidgetView: View {
             Spacer()
 
             Text("\(temp)\(unitSymbol)")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .font(.system(size: 36, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
 
             Text("H: \(highTemp)\u{00B0}  L: \(lowTemp)\u{00B0}")
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.white.opacity(0.8))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(for: .widget) {
             weatherGradient(for: snapshot.conditionId, icon: snapshot.conditionIcon)
         }
