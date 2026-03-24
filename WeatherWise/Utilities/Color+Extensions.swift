@@ -79,7 +79,14 @@ extension Color {
     static let onGradientCard = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(white: 0.0, alpha: 0.35)   // dark glass
-            : UIColor(white: 1.0, alpha: 0.25)   // frosted white glass
+            : UIColor(white: 1.0, alpha: 0.45)   // frosted white glass — more opaque for contrast
+    })
+
+    /// Card border on gradient
+    static let onGradientCardBorder = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 1.0, alpha: 0.15)
+            : UIColor(white: 1.0, alpha: 0.6)    // stronger border in light mode
     })
 }
 

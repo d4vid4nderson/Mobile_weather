@@ -103,7 +103,7 @@ struct ForecastView: View {
                 .fill(Color.onGradientCard)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                        .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
                 )
         }
     }
@@ -256,7 +256,7 @@ struct ForecastView: View {
                 .fill(Color.onGradientCard)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                        .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
                 )
         }
     }
