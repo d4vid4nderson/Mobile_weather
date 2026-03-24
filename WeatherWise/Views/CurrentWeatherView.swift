@@ -153,7 +153,7 @@ struct CurrentWeatherView: View {
         .sheet(item: $selectedDetail) { detail in
             WeatherDetailSheet(detailType: detail)
                 .environmentObject(viewModel)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
     }

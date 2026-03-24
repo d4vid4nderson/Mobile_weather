@@ -59,8 +59,10 @@ struct WeatherDetailSheet: View {
 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Hero value
-                        heroSection
+                        // Hero value (skip for sun views — arc is the hero)
+                        if detailType != .sunrise && detailType != .sunset {
+                            heroSection
+                        }
 
                         // Detail rows
                         detailRows
@@ -337,15 +339,20 @@ struct WeatherDetailSheet: View {
 
     private var sunriseDetails: some View {
         Group {
+            sunArcGraph
             detailRow(label: "Sunrise", value: viewModel.sunriseString)
             detailDivider
             detailRow(label: "Sunset", value: viewModel.sunsetString)
             detailDivider
             detailRow(label: "Day Length", value: dayLengthString)
             detailDivider
+            detailRow(label: "Night Length", value: nightLengthString)
+            detailDivider
             detailRow(label: "Currently", value: viewModel.isDaytime ? "Daytime" : "Nighttime")
             detailDivider
-            detailRow(label: "Golden Hour", value: goldenHourString(isSunrise: true))
+            detailRow(label: "Golden Hour (AM)", value: goldenHourString(isSunrise: true))
+            detailDivider
+            detailRow(label: "Golden Hour (PM)", value: goldenHourString(isSunrise: false))
         }
     }
 
@@ -353,15 +360,37 @@ struct WeatherDetailSheet: View {
 
     private var sunsetDetails: some View {
         Group {
+            sunArcGraph
             detailRow(label: "Sunset", value: viewModel.sunsetString)
             detailDivider
             detailRow(label: "Sunrise", value: viewModel.sunriseString)
             detailDivider
             detailRow(label: "Day Length", value: dayLengthString)
             detailDivider
+            detailRow(label: "Night Length", value: nightLengthString)
+            detailDivider
             detailRow(label: "Currently", value: viewModel.isDaytime ? "Daytime" : "Nighttime")
             detailDivider
-            detailRow(label: "Golden Hour", value: goldenHourString(isSunrise: false))
+            detailRow(label: "Golden Hour (AM)", value: goldenHourString(isSunrise: true))
+            detailDivider
+            detailRow(label: "Golden Hour (PM)", value: goldenHourString(isSunrise: false))
+        }
+    }
+
+    // MARK: - Sun Arc Graph
+
+    @ViewBuilder
+    private var sunArcGraph: some View {
+        if let sunrise = viewModel.currentWeather?.sys.sunrise,
+           let sunset = viewModel.currentWeather?.sys.sunset {
+            SunArcView(
+                sunrise: sunrise,
+                sunset: sunset,
+                timezoneOffset: viewModel.currentWeather?.timezone ?? 0,
+                isDaytime: viewModel.isDaytime
+            )
+            .padding(.horizontal, 12)
+            .padding(.vertical, 16)
         }
     }
 
@@ -371,6 +400,15 @@ struct WeatherDetailSheet: View {
         let diff = sunset - sunrise
         let hours = diff / 3600
         let minutes = (diff % 3600) / 60
+        return "\(hours)h \(minutes)m"
+    }
+
+    private var nightLengthString: String {
+        guard let sunrise = viewModel.currentWeather?.sys.sunrise,
+              let sunset = viewModel.currentWeather?.sys.sunset else { return "--" }
+        let nightSeconds = 86400 - (sunset - sunrise)
+        let hours = nightSeconds / 3600
+        let minutes = (nightSeconds % 3600) / 60
         return "\(hours)h \(minutes)m"
     }
 
