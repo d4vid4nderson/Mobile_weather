@@ -145,30 +145,29 @@ struct CurrentWeatherView: View {
                             .foregroundStyle(Color.onGradientSecondary)
                     }
 
-                    HStack(spacing: 4) {
+                    HStack(spacing: 3) {
                         Image(systemName: "sunrise.fill")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundStyle(.yellow.opacity(0.8))
                         Text(viewModel.sunriseString)
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundStyle(Color.onGradientPrimary)
 
                         Text("/")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.title3)
                             .foregroundStyle(Color.onGradientSecondary)
 
                         Image(systemName: "sunset.fill")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundStyle(.orange.opacity(0.8))
                         Text(viewModel.sunsetString)
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundStyle(Color.onGradientPrimary)
                     }
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.6)
 
                     Text(viewModel.daylightDurationString)
                         .font(.caption)
