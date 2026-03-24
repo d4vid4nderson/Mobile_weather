@@ -208,10 +208,14 @@ struct WeatherMapView: UIViewRepresentable {
 
         // Update coordinator state
         context.coordinator.currentOpacity = overlayOpacity
+        context.coordinator.selectedLayer = selectedLayer
+
+        // Update wind grid arrows
+        context.coordinator.windGridManager.updateGrid(for: mapView, isWindLayer: selectedLayer == .wind)
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(overlayOpacity: overlayOpacity)
+        Coordinator(overlayOpacity: overlayOpacity, apiKey: apiKey)
     }
 
     // MARK: - Helpers
@@ -263,9 +267,12 @@ struct WeatherMapView: UIViewRepresentable {
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         var currentOpacity: Double
+        var selectedLayer: WeatherLayer = .precipitation
+        let windGridManager: WindGridManager
 
-        init(overlayOpacity: Double) {
+        init(overlayOpacity: Double, apiKey: String) {
             self.currentOpacity = overlayOpacity
+            self.windGridManager = WindGridManager(apiKey: apiKey)
             super.init()
         }
 
@@ -310,6 +317,19 @@ struct WeatherMapView: UIViewRepresentable {
                 return annotationView
             }
 
+            if let windAnnotation = annotation as? WindArrowAnnotation {
+                let identifier = "WindArrow"
+                var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? WindArrowAnnotationView
+                if view == nil {
+                    view = WindArrowAnnotationView(annotation: windAnnotation, reuseIdentifier: identifier)
+                } else {
+                    view?.annotation = windAnnotation
+                }
+                view?.configure(windDeg: windAnnotation.windDeg, windSpeed: windAnnotation.windSpeed)
+                view?.canShowCallout = false
+                return view
+            }
+
             if let savedAnnotation = annotation as? SavedLocationAnnotation {
                 let identifier = "SavedLocationPin"
                 var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
@@ -346,6 +366,13 @@ struct WeatherMapView: UIViewRepresentable {
 
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
             // Allow default callout behavior
+        }
+
+        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            // Update wind arrows when map region changes
+            if selectedLayer == .wind {
+                windGridManager.updateGrid(for: mapView, isWindLayer: true)
+            }
         }
 
         func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
@@ -399,17 +426,6 @@ struct RadarView: View {
                 regionSpan: defaultSpan,
                 mapView: $mapView
             )
-            .overlay {
-                // MARK: - Wind Arrow Overlay (only when wind layer active)
-                if selectedLayer == .wind {
-                    WindArrowOverlayView(
-                        windDeg: Double(viewModel.currentWeather?.wind.deg ?? 0),
-                        windSpeed: viewModel.currentWeather?.wind.speed ?? 0
-                    )
-                    .transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.4), value: selectedLayer)
             .ignoresSafeArea()
 
             // MARK: - Overlay Controls

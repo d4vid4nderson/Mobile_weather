@@ -1,203 +1,283 @@
-import SwiftUI
+import UIKit
+import MapKit
 
-/// Animated directional wind arrows overlaid on the radar map.
-/// Shows flowing arrow particles that travel in the wind direction.
-/// Arrow length scales with wind speed: short for calm, long for strong.
-struct WindArrowOverlayView: View {
-    let windDeg: Double   // meteorological degrees (0=N, 90=E, 180=S, 270=W)
-    let windSpeed: Double // mph
+// MARK: - Wind Grid Point Data
 
-    @State private var arrows: [WindArrow] = []
+struct WindGridPoint {
+    let coordinate: CLLocationCoordinate2D
+    let windDeg: Double
+    let windSpeed: Double  // mph
+}
 
-    /// Wind blows FROM this direction, so arrows travel in the opposite heading.
-    private var flowAngle: Double {
-        let toRad = Double.pi / 180.0
-        return (windDeg + 180.0).truncatingRemainder(dividingBy: 360.0) * toRad
+// MARK: - Wind Arrow Annotation
+
+final class WindArrowAnnotation: MKPointAnnotation {
+    var windDeg: Double = 0
+    var windSpeed: Double = 0
+    var gridKey: String = ""
+}
+
+// MARK: - Wind Arrow Annotation View
+
+final class WindArrowAnnotationView: MKAnnotationView {
+    private let arrowLayer = CAShapeLayer()
+    private var displayLink: CADisplayLink?
+    private var animationOffset: CGFloat = 0
+    private var arrowLength: CGFloat = 20
+
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        setup()
     }
 
-    /// Arrow count scales with wind speed
-    private var arrowCount: Int {
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+
+    private func setup() {
+        frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        centerOffset = .zero
+        backgroundColor = .clear
+        isUserInteractionEnabled = false
+
+        arrowLayer.strokeColor = UIColor.white.cgColor
+        arrowLayer.fillColor = UIColor.clear.cgColor
+        arrowLayer.lineWidth = 2.0
+        arrowLayer.lineCap = .round
+        arrowLayer.lineJoin = .round
+        arrowLayer.shadowColor = UIColor.black.cgColor
+        arrowLayer.shadowOffset = CGSize(width: 0.5, height: 0.5)
+        arrowLayer.shadowRadius = 1.5
+        arrowLayer.shadowOpacity = 0.5
+        layer.addSublayer(arrowLayer)
+
+        startAnimation()
+    }
+
+    func configure(windDeg: Double, windSpeed: Double) {
+        // Wind blows FROM deg, arrow points where wind goes TO
+        let toAngle = (windDeg + 180.0).truncatingRemainder(dividingBy: 360.0)
+        let radians = toAngle * .pi / 180.0
+
+        // Arrow length scales with wind speed
+        arrowLength = arrowLengthForSpeed(windSpeed)
+
+        // Resize frame based on arrow length
+        let size = max(arrowLength * 2.2, 50)
+        frame = CGRect(x: 0, y: 0, width: size, height: size)
+
+        // Opacity scales with wind speed
+        let opacity: Float
         switch windSpeed {
-        case 0..<5: return 25
-        case 5..<15: return 40
-        case 15..<30: return 55
-        default: return 70
+        case 0..<3: opacity = 0.3
+        case 3..<8: opacity = 0.5
+        case 8..<15: opacity = 0.65
+        case 15..<25: opacity = 0.8
+        default: opacity = 0.9
+        }
+        arrowLayer.opacity = opacity
+
+        // Line width scales slightly with speed
+        arrowLayer.lineWidth = windSpeed > 20 ? 2.5 : (windSpeed > 10 ? 2.0 : 1.5)
+
+        // Rotate the entire view to wind direction
+        transform = CGAffineTransform(rotationAngle: radians)
+
+        updateArrowPath()
+    }
+
+    private func arrowLengthForSpeed(_ speed: Double) -> CGFloat {
+        switch speed {
+        case 0..<3: return 10
+        case 3..<8: return 16
+        case 8..<15: return 22
+        case 15..<25: return 30
+        case 25..<40: return 38
+        default: return 44
         }
     }
 
-    /// Arrow length range scales with wind speed
-    private var arrowLengthRange: ClosedRange<CGFloat> {
-        switch windSpeed {
-        case 0..<5:   return 12...20    // calm: short stubby arrows
-        case 5..<10:  return 18...30    // light
-        case 10..<20: return 28...45    // moderate
-        case 20..<35: return 40...65    // strong: long streaky arrows
-        default:      return 55...85    // severe: very long
-        }
-    }
+    private func updateArrowPath() {
+        let cx = bounds.midX
+        let cy = bounds.midY
+        let halfLen = arrowLength / 2
 
-    /// Animation speed multiplier
-    private var speedFactor: CGFloat {
-        switch windSpeed {
-        case 0..<5: return 0.3
-        case 5..<15: return 0.6
-        case 15..<30: return 1.0
-        default: return 1.5
-        }
-    }
+        // Shaft pointing up (rotation handles direction)
+        let path = UIBezierPath()
+        let tailY = cy + halfLen + animationOffset
+        let tipY = cy - halfLen + animationOffset
 
-    var body: some View {
-        GeometryReader { geo in
-            let w = geo.size.width
-            let h = geo.size.height
-
-            TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
-                Canvas { context, size in
-                    let now = timeline.date.timeIntervalSinceReferenceDate
-                    let angle = flowAngle
-                    let dx = CGFloat(sin(angle))
-                    let dy = CGFloat(-cos(angle))
-
-                    for arrow in arrows {
-                        let speed = arrow.speed * speedFactor
-                        let travel = sqrt(w * w + h * h) + 400
-                        // Longer cycle = arrows stay visible longer
-                        let cycleDuration = Double(travel) / Double(speed * 40)
-                        guard cycleDuration > 0 else { continue }
-
-                        let raw = (now - arrow.delay).truncatingRemainder(dividingBy: cycleDuration)
-                        let progress = CGFloat(raw >= 0 ? raw / cycleDuration : (raw + cycleDuration) / cycleDuration)
-
-                        // Perpendicular offset so arrows spread across screen
-                        let perpDx = -dy
-                        let perpDy = dx
-                        let startX = w * 0.5 + perpDx * arrow.lateralSpread - dx * (travel * 0.5)
-                        let startY = h * 0.5 + perpDy * arrow.lateralSpread - dy * (travel * 0.5)
-                        let x = startX + dx * travel * progress
-                        let y = startY + dy * travel * progress
-
-                        // Skip if off screen
-                        guard x > -80 && x < w + 80 && y > -80 && y < h + 80 else { continue }
-
-                        // Only fade at very start and very end — stay solid most of travel
-                        let edgeFade: Double
-                        if progress < 0.05 {
-                            edgeFade = Double(progress / 0.05)
-                        } else if progress > 0.95 {
-                            edgeFade = Double((1.0 - progress) / 0.05)
-                        } else {
-                            edgeFade = 1.0
-                        }
-
-                        let opacity = arrow.opacity * edgeFade
-
-                        drawArrow(
-                            in: &context,
-                            at: CGPoint(x: x, y: y),
-                            angle: angle,
-                            length: arrow.length,
-                            thickness: arrow.thickness,
-                            opacity: opacity
-                        )
-                    }
-                }
-            }
-            .onAppear { generateArrows(width: w, height: h) }
-            .onChange(of: geo.size) { _, s in generateArrows(width: s.width, height: s.height) }
-            .onChange(of: windDeg) { _, _ in generateArrows(width: w, height: h) }
-            .onChange(of: windSpeed) { _, _ in generateArrows(width: w, height: h) }
-        }
-        .allowsHitTesting(false)
-    }
-
-    // MARK: - Arrow Drawing
-
-    private func drawArrow(
-        in context: inout GraphicsContext,
-        at point: CGPoint,
-        angle: Double,
-        length: CGFloat,
-        thickness: CGFloat,
-        opacity: Double
-    ) {
-        let dx = CGFloat(sin(angle))
-        let dy = CGFloat(-cos(angle))
-
-        let tailX = point.x - dx * length * 0.5
-        let tailY = point.y - dy * length * 0.5
-        let tipX = point.x + dx * length * 0.5
-        let tipY = point.y + dy * length * 0.5
-
-        // Shadow for contrast
-        let so: CGFloat = 1.0
-        var shadowShaft = Path()
-        shadowShaft.move(to: CGPoint(x: tailX + so, y: tailY + so))
-        shadowShaft.addLine(to: CGPoint(x: tipX + so, y: tipY + so))
-        context.opacity = opacity * 0.4
-        context.stroke(shadowShaft, with: .color(.black), lineWidth: thickness + 1.5)
-
-        // Main shaft
-        var shaft = Path()
-        shaft.move(to: CGPoint(x: tailX, y: tailY))
-        shaft.addLine(to: CGPoint(x: tipX, y: tipY))
-        context.opacity = opacity
-        context.stroke(shaft, with: .color(.white), lineWidth: thickness)
+        // Shaft
+        path.move(to: CGPoint(x: cx, y: tailY))
+        path.addLine(to: CGPoint(x: cx, y: tipY))
 
         // Chevron head
-        let headLen = min(length * 0.35, 20)
-        let headAngle = Double.pi / 5.5
+        let headLen = min(arrowLength * 0.35, 14)
+        let headAngle: CGFloat = .pi / 5.5
+        let leftX = cx - sin(headAngle) * headLen
+        let leftY = tipY + cos(headAngle) * headLen
+        let rightX = cx + sin(headAngle) * headLen
+        let rightY = leftY
 
-        let leftX = tipX - CGFloat(sin(angle + headAngle)) * headLen
-        let leftY = tipY + CGFloat(cos(angle + headAngle)) * headLen
-        let rightX = tipX - CGFloat(sin(angle - headAngle)) * headLen
-        let rightY = tipY + CGFloat(cos(angle - headAngle)) * headLen
+        path.move(to: CGPoint(x: leftX, y: leftY))
+        path.addLine(to: CGPoint(x: cx, y: tipY))
+        path.addLine(to: CGPoint(x: rightX, y: rightY))
 
-        // Shadow head
-        var shadowHead = Path()
-        shadowHead.move(to: CGPoint(x: leftX + so, y: leftY + so))
-        shadowHead.addLine(to: CGPoint(x: tipX + so, y: tipY + so))
-        shadowHead.addLine(to: CGPoint(x: rightX + so, y: rightY + so))
-        context.opacity = opacity * 0.4
-        context.stroke(shadowHead, with: .color(.black),
-                       style: StrokeStyle(lineWidth: thickness + 1.0, lineCap: .round, lineJoin: .round))
-
-        // Main head
-        var head = Path()
-        head.move(to: CGPoint(x: leftX, y: leftY))
-        head.addLine(to: CGPoint(x: tipX, y: tipY))
-        head.addLine(to: CGPoint(x: rightX, y: rightY))
-        context.opacity = opacity
-        context.stroke(head, with: .color(.white),
-                       style: StrokeStyle(lineWidth: thickness * 1.3, lineCap: .round, lineJoin: .round))
+        arrowLayer.path = path.cgPath
     }
 
-    // MARK: - Generation
+    private func startAnimation() {
+        displayLink = CADisplayLink(target: self, selector: #selector(tick))
+        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 15, maximum: 30)
+        displayLink?.add(to: .main, forMode: .common)
+    }
 
-    private func generateArrows(width: CGFloat, height: CGFloat) {
-        guard width > 0, height > 0 else { return }
-        let maxSpread = sqrt(width * width + height * height) * 0.6
-        let lenRange = arrowLengthRange
+    @objc private func tick(_ link: CADisplayLink) {
+        // Gentle bob animation
+        animationOffset = sin(CGFloat(link.timestamp) * 1.5) * 2.0
+        updateArrowPath()
+    }
 
-        arrows = (0..<arrowCount).map { _ in
-            WindArrow(
-                lateralSpread: CGFloat.random(in: -maxSpread...maxSpread),
-                length: CGFloat.random(in: lenRange),
-                thickness: CGFloat.random(in: 1.5...2.8),
-                speed: CGFloat.random(in: 1.5...4.0),
-                opacity: Double.random(in: 0.5...0.85),
-                delay: Double.random(in: 0...12)
-            )
-        }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        transform = .identity
+    }
+
+    deinit {
+        displayLink?.invalidate()
     }
 }
 
-// MARK: - Model
+// MARK: - Wind Grid Manager
 
-private struct WindArrow {
-    let lateralSpread: CGFloat
-    let length: CGFloat
-    let thickness: CGFloat
-    let speed: CGFloat
-    let opacity: Double
-    let delay: Double
+/// Fetches wind data for a grid of points across the visible map region
+/// and manages wind arrow annotations on the map.
+final class WindGridManager {
+    private let apiKey: String
+    private var cachedPoints: [String: WindGridPoint] = [:]
+    private var pendingFetches: Set<String> = []
+    private var lastGridUpdate = Date.distantPast
+    private let gridCols = 5
+    private let gridRows = 7
+    private let minUpdateInterval: TimeInterval = 2.0 // debounce
+
+    init(apiKey: String) {
+        self.apiKey = apiKey
+    }
+
+    /// Called when the map region changes. Fetches wind for grid points and updates annotations.
+    func updateGrid(for mapView: MKMapView, isWindLayer: Bool) {
+        // Remove wind annotations if not wind layer
+        if !isWindLayer {
+            removeAllWindAnnotations(from: mapView)
+            return
+        }
+
+        // Debounce
+        let now = Date()
+        guard now.timeIntervalSince(lastGridUpdate) >= minUpdateInterval else { return }
+        lastGridUpdate = now
+
+        let region = mapView.region
+        let latStep = region.span.latitudeDelta / Double(gridRows + 1)
+        let lonStep = region.span.longitudeDelta / Double(gridCols + 1)
+        let baseLat = region.center.latitude - region.span.latitudeDelta / 2
+        let baseLon = region.center.longitude - region.span.longitudeDelta / 2
+
+        var neededKeys: Set<String> = []
+
+        for row in 1...gridRows {
+            for col in 1...gridCols {
+                let lat = baseLat + latStep * Double(row)
+                let lon = baseLon + lonStep * Double(col)
+                // Round to ~0.5° grid for caching
+                let snapLat = (lat * 2).rounded() / 2
+                let snapLon = (lon * 2).rounded() / 2
+                let key = "\(snapLat),\(snapLon)"
+                neededKeys.insert(key)
+
+                if cachedPoints[key] == nil && !pendingFetches.contains(key) {
+                    pendingFetches.insert(key)
+                    fetchWind(lat: snapLat, lon: snapLon, key: key) { [weak self] point in
+                        DispatchQueue.main.async {
+                            self?.pendingFetches.remove(key)
+                            if let point = point {
+                                self?.cachedPoints[key] = point
+                                self?.placeAnnotation(for: point, key: key, on: mapView)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove annotations that are no longer in the visible grid
+        removeStaleAnnotations(from: mapView, activeKeys: neededKeys)
+
+        // Place cached points that are in the needed set
+        for key in neededKeys {
+            if let point = cachedPoints[key] {
+                // Only add if not already on map
+                let existing = mapView.annotations.contains { ann in
+                    (ann as? WindArrowAnnotation)?.gridKey == key
+                }
+                if !existing {
+                    placeAnnotation(for: point, key: key, on: mapView)
+                }
+            }
+        }
+    }
+
+    private func placeAnnotation(for point: WindGridPoint, key: String, on mapView: MKMapView) {
+        let ann = WindArrowAnnotation()
+        ann.coordinate = point.coordinate
+        ann.windDeg = point.windDeg
+        ann.windSpeed = point.windSpeed
+        ann.gridKey = key
+        mapView.addAnnotation(ann)
+    }
+
+    private func removeStaleAnnotations(from mapView: MKMapView, activeKeys: Set<String>) {
+        let stale = mapView.annotations.compactMap { $0 as? WindArrowAnnotation }
+            .filter { !activeKeys.contains($0.gridKey) }
+        if !stale.isEmpty {
+            mapView.removeAnnotations(stale)
+        }
+    }
+
+    func removeAllWindAnnotations(from mapView: MKMapView) {
+        let windAnns = mapView.annotations.filter { $0 is WindArrowAnnotation }
+        if !windAnns.isEmpty {
+            mapView.removeAnnotations(windAnns)
+        }
+    }
+
+    private func fetchWind(lat: Double, lon: Double, key: String, completion: @escaping (WindGridPoint?) -> Void) {
+        let urlStr = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&units=imperial&appid=\(apiKey)"
+        guard let url = URL(string: urlStr) else {
+            completion(nil)
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(nil)
+                return
+            }
+            do {
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                let wind = json?["wind"] as? [String: Any]
+                let deg = wind?["deg"] as? Double ?? 0
+                let speed = wind?["speed"] as? Double ?? 0
+                completion(WindGridPoint(
+                    coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+                    windDeg: deg,
+                    windSpeed: speed
+                ))
+            } catch {
+                completion(nil)
+            }
+        }.resume()
+    }
 }
