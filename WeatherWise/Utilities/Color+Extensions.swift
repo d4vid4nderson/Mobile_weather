@@ -58,27 +58,28 @@ extension Color {
     })
 
     // MARK: - On-Gradient Colors (Weather Tab)
-    // Adapt to dark/light mode for contrast against the themed gradient
+    // Light mode: white text on bright gradients, frosted-glass cards
+    // Dark mode: crisp white text on deep gradients, dark glass cards
 
-    /// Primary text on gradient: bright white in dark, deep charcoal in light
+    /// Primary text on gradient
     static let onGradientPrimary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.95, alpha: 1.0)
+            ? UIColor(white: 0.97, alpha: 1.0)
             : UIColor(white: 1.0, alpha: 1.0)
     })
 
-    /// Secondary text on gradient: legible on both dark and light gradients
+    /// Secondary text / labels on gradient
     static let onGradientSecondary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.88, alpha: 1.0)
-            : UIColor(white: 1.0, alpha: 0.80)
+            ? UIColor(white: 0.70, alpha: 1.0)   // noticeably dimmer on dark
+            : UIColor(white: 1.0, alpha: 0.70)   // translucent white on light
     })
 
-    /// Card overlay on gradient: more opaque in dark for separation, lighter in light
+    /// Card surface on gradient
     static let onGradientCard = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.0, alpha: 0.25)
-            : UIColor(white: 1.0, alpha: 0.20)
+            ? UIColor(white: 0.0, alpha: 0.35)   // dark glass
+            : UIColor(white: 1.0, alpha: 0.25)   // frosted white glass
     })
 }
 

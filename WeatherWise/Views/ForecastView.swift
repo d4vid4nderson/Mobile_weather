@@ -98,7 +98,14 @@ struct ForecastView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
-        .background(Color.onGradientCard, in: RoundedRectangle(cornerRadius: 16))
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.onGradientCard)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                )
+        }
     }
 
     // MARK: - Hourly Forecast
@@ -171,7 +178,14 @@ struct ForecastView: View {
             }
         }
         .padding(16)
-        .background(Color.onGradientCard, in: RoundedRectangle(cornerRadius: 16))
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.onGradientCard)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                )
+        }
     }
 
     private func dailyRow(_ day: DailyForecast) -> some View {
