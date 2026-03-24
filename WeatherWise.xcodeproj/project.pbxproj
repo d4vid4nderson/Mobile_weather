@@ -39,7 +39,54 @@
 		A1001F01 /* MoonPhaseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001F00 /* MoonPhaseCalculator.swift */; };
 		A1002001 /* MoonArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002000 /* MoonArcView.swift */; };
 		A1002101 /* RadarDataGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002100 /* RadarDataGraphView.swift */; };
+		/* Shared files in main app target */
+		A1002201 /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002200 /* SharedConstants.swift */; };
+		A1002301 /* SharedWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002300 /* SharedWeatherData.swift */; };
+		A1002401 /* SharedWeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002400 /* SharedWeatherService.swift */; };
+		/* Widget target source files */
+		A1002501 /* WeatherWiseWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002500 /* WeatherWiseWidgetBundle.swift */; };
+		A1002601 /* WeatherTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002600 /* WeatherTimelineProvider.swift */; };
+		A1002701 /* WeatherTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002700 /* WeatherTimelineEntry.swift */; };
+		A1002801 /* WeatherWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002800 /* WeatherWidget.swift */; };
+		A1002901 /* SmallWeatherWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002900 /* SmallWeatherWidgetView.swift */; };
+		A1002A01 /* MediumWeatherWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002A00 /* MediumWeatherWidgetView.swift */; };
+		A1002B01 /* LargeWeatherWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002B00 /* LargeWeatherWidgetView.swift */; };
+		A1002C01 /* WidgetGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002C00 /* WidgetGradient.swift */; };
+		/* Shared files compiled in widget target */
+		A1002D01 /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002200 /* SharedConstants.swift */; };
+		A1002E01 /* SharedWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002300 /* SharedWeatherData.swift */; };
+		A1002F01 /* SharedWeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002400 /* SharedWeatherService.swift */; };
+		/* Existing app files compiled in widget target */
+		A1003001 /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000200 /* WeatherModels.swift */; };
+		A1003101 /* WeatherIconMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000B00 /* WeatherIconMapper.swift */; };
+		A1003201 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000C00 /* DateFormatter+Extensions.swift */; };
+		/* Widget extension product embed */
+		A1003301 /* WeatherWiseWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A1003300 /* WeatherWiseWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1003400 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1BBB000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1BBB002;
+			remoteInfo = WeatherWiseWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1003500 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A1003301 /* WeatherWiseWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A1000001 /* WeatherWise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherWise.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,10 +123,37 @@
 		A1001F00 /* MoonPhaseCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPhaseCalculator.swift; sourceTree = "<group>"; };
 		A1002000 /* MoonArcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonArcView.swift; sourceTree = "<group>"; };
 		A1002100 /* RadarDataGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarDataGraphView.swift; sourceTree = "<group>"; };
+		/* Shared files */
+		A1002200 /* SharedConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedConstants.swift; sourceTree = "<group>"; };
+		A1002300 /* SharedWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWeatherData.swift; sourceTree = "<group>"; };
+		A1002400 /* SharedWeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWeatherService.swift; sourceTree = "<group>"; };
+		/* Widget extension files */
+		A1002500 /* WeatherWiseWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWiseWidgetBundle.swift; sourceTree = "<group>"; };
+		A1002600 /* WeatherTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTimelineProvider.swift; sourceTree = "<group>"; };
+		A1002700 /* WeatherTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTimelineEntry.swift; sourceTree = "<group>"; };
+		A1002800 /* WeatherWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidget.swift; sourceTree = "<group>"; };
+		A1002900 /* SmallWeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallWeatherWidgetView.swift; sourceTree = "<group>"; };
+		A1002A00 /* MediumWeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumWeatherWidgetView.swift; sourceTree = "<group>"; };
+		A1002B00 /* LargeWeatherWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeWeatherWidgetView.swift; sourceTree = "<group>"; };
+		A1002C00 /* WidgetGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGradient.swift; sourceTree = "<group>"; };
+		/* Entitlements */
+		A1002D00 /* WeatherWise.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherWise.entitlements; sourceTree = "<group>"; };
+		A1002E00 /* WeatherWiseWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherWiseWidget.entitlements; sourceTree = "<group>"; };
+		/* Widget Info.plist */
+		A1002F00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		/* Widget extension product */
+		A1003300 /* WeatherWiseWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherWiseWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A1FFF001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FFF010 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -93,6 +167,8 @@
 			isa = PBXGroup;
 			children = (
 				A1AAA001 /* WeatherWise */,
+				A1AAA060 /* Shared */,
+				A1AAA070 /* WeatherWiseWidget */,
 				A1AAA099 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				A1000001 /* WeatherWise.app */,
+				A1003300 /* WeatherWiseWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -110,6 +187,7 @@
 			children = (
 				A1000100 /* WeatherWiseApp.swift */,
 				A1000F00 /* Info.plist */,
+				A1002D00 /* WeatherWise.entitlements */,
 				A1000E00 /* Assets.xcassets */,
 				A1AAA010 /* Models */,
 				A1AAA020 /* Services */,
@@ -185,6 +263,33 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		A1AAA060 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A1002200 /* SharedConstants.swift */,
+				A1002300 /* SharedWeatherData.swift */,
+				A1002400 /* SharedWeatherService.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A1AAA070 /* WeatherWiseWidget */ = {
+			isa = PBXGroup;
+			children = (
+				A1002500 /* WeatherWiseWidgetBundle.swift */,
+				A1002600 /* WeatherTimelineProvider.swift */,
+				A1002700 /* WeatherTimelineEntry.swift */,
+				A1002800 /* WeatherWidget.swift */,
+				A1002900 /* SmallWeatherWidgetView.swift */,
+				A1002A00 /* MediumWeatherWidgetView.swift */,
+				A1002B00 /* LargeWeatherWidgetView.swift */,
+				A1002C00 /* WidgetGradient.swift */,
+				A1002E00 /* WeatherWiseWidget.entitlements */,
+				A1002F00 /* Info.plist */,
+			);
+			path = WeatherWiseWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -195,15 +300,34 @@
 				A1FFF000 /* Sources */,
 				A1FFF001 /* Frameworks */,
 				A1FFF002 /* Resources */,
+				A1003500 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A1003600 /* PBXTargetDependency */,
 			);
 			name = WeatherWise;
 			productName = WeatherWise;
 			productReference = A1000001 /* WeatherWise.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A1BBB002 /* WeatherWiseWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1CCC006 /* Build configuration list for PBXNativeTarget "WeatherWiseWidgetExtension" */;
+			buildPhases = (
+				A1FFF003 /* Sources */,
+				A1FFF010 /* Frameworks */,
+				A1FFF004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WeatherWiseWidgetExtension;
+			productName = WeatherWiseWidgetExtension;
+			productReference = A1003300 /* WeatherWiseWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -216,6 +340,9 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					A1BBB001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					A1BBB002 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -234,6 +361,7 @@
 			projectRoot = "";
 			targets = (
 				A1BBB001 /* WeatherWise */,
+				A1BBB002 /* WeatherWiseWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -244,6 +372,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1000EFF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FFF004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,10 +420,42 @@
 				A1001F01 /* MoonPhaseCalculator.swift in Sources */,
 				A1002001 /* MoonArcView.swift in Sources */,
 				A1002101 /* RadarDataGraphView.swift in Sources */,
+				A1002201 /* SharedConstants.swift in Sources */,
+				A1002301 /* SharedWeatherData.swift in Sources */,
+				A1002401 /* SharedWeatherService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1FFF003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1002501 /* WeatherWiseWidgetBundle.swift in Sources */,
+				A1002601 /* WeatherTimelineProvider.swift in Sources */,
+				A1002701 /* WeatherTimelineEntry.swift in Sources */,
+				A1002801 /* WeatherWidget.swift in Sources */,
+				A1002901 /* SmallWeatherWidgetView.swift in Sources */,
+				A1002A01 /* MediumWeatherWidgetView.swift in Sources */,
+				A1002B01 /* LargeWeatherWidgetView.swift in Sources */,
+				A1002C01 /* WidgetGradient.swift in Sources */,
+				A1002D01 /* SharedConstants.swift in Sources */,
+				A1002E01 /* SharedWeatherData.swift in Sources */,
+				A1002F01 /* SharedWeatherService.swift in Sources */,
+				A1003001 /* WeatherModels.swift in Sources */,
+				A1003101 /* WeatherIconMapper.swift in Sources */,
+				A1003201 /* DateFormatter+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1003600 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1BBB002 /* WeatherWiseWidgetExtension */;
+			targetProxy = A1003400 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A1DDD001 /* Debug */ = {
@@ -415,6 +582,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WeatherWise/WeatherWise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -447,6 +615,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WeatherWise/WeatherWise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -474,6 +643,64 @@
 			};
 			name = Release;
 		};
+		A1DDD005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WeatherWiseWidget/WeatherWiseWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeatherWiseWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Weather Wise Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.weatherwise.app.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1DDD006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WeatherWiseWidget/WeatherWiseWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeatherWiseWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Weather Wise Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.weatherwise.app.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -491,6 +718,15 @@
 			buildConfigurations = (
 				A1DDD003 /* Debug */,
 				A1DDD004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1CCC006 /* Build configuration list for PBXNativeTarget "WeatherWiseWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1DDD005 /* Debug */,
+				A1DDD006 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
