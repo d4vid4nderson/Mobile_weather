@@ -70,6 +70,10 @@ struct SunArcView: View {
                 let rect = geo.frame(in: .local)
                 let horizonY = rect.midY
 
+                if rect.width < 1 || rect.height < 1 {
+                    Color.clear
+                } else {
+
                 ZStack {
                     // Daytime gradient fill
                     daytimeFill(rect: rect)
@@ -124,6 +128,8 @@ struct SunArcView: View {
                     // Time labels
                     timeLabels(rect: rect, horizonY: horizonY)
                 }
+
+                } // else
             }
             .frame(height: 200)
             .padding(.horizontal, 4)
@@ -273,7 +279,7 @@ struct SunArcView: View {
                     .foregroundStyle(Color.onGradientPrimary)
             }
         }
-        .position(x: x.clamped(to: 30...(rect.width - 30)), y: y + 24)
+        .position(x: x.clamped(to: 0...max(rect.width, 1)), y: y + 24)
     }
 
     // MARK: - Time Labels
