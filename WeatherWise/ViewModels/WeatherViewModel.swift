@@ -153,7 +153,15 @@ final class WeatherViewModel: ObservableObject {
         guard let conditionId = currentWeather?.weather.first?.id else {
             return WeatherGradients.defaultBackground
         }
-        let isDark = appearance == .dark || (appearance == .system && UIScreen.main.traitCollection.userInterfaceStyle == .dark)
+        let isDark: Bool
+        switch appearance {
+        case .dark:
+            isDark = true
+        case .light:
+            isDark = false
+        case .system:
+            isDark = UITraitCollection.current.userInterfaceStyle == .dark
+        }
         return WeatherGradients.background(for: conditionId, isDaytime: isDaytime, darkMode: isDark)
     }
 
