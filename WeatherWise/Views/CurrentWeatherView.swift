@@ -132,20 +132,21 @@ struct CurrentWeatherView: View {
             }
             .buttonStyle(.plain)
 
-            Button { selectedDetail = .sunrise } label: {
+            Button { selectedDetail = .sun } label: {
                 WeatherDetailCard(
-                    icon: "sunrise.fill",
-                    title: "SUNRISE",
-                    value: viewModel.sunriseString
+                    icon: "sun.max.fill",
+                    title: "SUNRISE / SUNSET",
+                    value: "\(viewModel.sunriseString) / \(viewModel.sunsetString)"
                 )
             }
             .buttonStyle(.plain)
 
-            Button { selectedDetail = .sunset } label: {
+            Button { selectedDetail = .moonPhase } label: {
                 WeatherDetailCard(
-                    icon: "sunset.fill",
-                    title: "SUNSET",
-                    value: viewModel.sunsetString
+                    icon: MoonPhaseCalculator.currentPhase().icon,
+                    title: "MOON PHASE",
+                    value: MoonPhaseCalculator.currentPhaseName(),
+                    subtitle: "\(Int(MoonPhaseCalculator.currentPhase().illumination * 100))% illuminated"
                 )
             }
             .buttonStyle(.plain)

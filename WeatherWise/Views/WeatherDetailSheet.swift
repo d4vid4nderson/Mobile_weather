@@ -7,8 +7,8 @@ enum WeatherDetailType: Identifiable {
     case wind
     case pressure
     case visibility
-    case sunrise
-    case sunset
+    case sun
+    case moonPhase
 
     var id: String {
         switch self {
@@ -16,8 +16,8 @@ enum WeatherDetailType: Identifiable {
         case .wind: return "wind"
         case .pressure: return "pressure"
         case .visibility: return "visibility"
-        case .sunrise: return "sunrise"
-        case .sunset: return "sunset"
+        case .sun: return "sun"
+        case .moonPhase: return "moonPhase"
         }
     }
 
@@ -27,8 +27,8 @@ enum WeatherDetailType: Identifiable {
         case .wind: return "Wind"
         case .pressure: return "Pressure"
         case .visibility: return "Visibility"
-        case .sunrise: return "Sunrise"
-        case .sunset: return "Sunset"
+        case .sun: return "Sun"
+        case .moonPhase: return "Moon"
         }
     }
 
@@ -38,8 +38,8 @@ enum WeatherDetailType: Identifiable {
         case .wind: return "wind"
         case .pressure: return "gauge.medium"
         case .visibility: return "eye.fill"
-        case .sunrise: return "sunrise.fill"
-        case .sunset: return "sunset.fill"
+        case .sun: return "sun.max.fill"
+        case .moonPhase: return "moon.fill"
         }
     }
 }
@@ -74,8 +74,8 @@ struct WeatherDetailSheet: View {
 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Hero value (skip for sun views — arc is the hero)
-                        if detailType != .sunrise && detailType != .sunset {
+                        // Hero value (skip for sun/moon views — arc is the hero)
+                        if detailType != .sun && detailType != .moonPhase {
                             heroSection
                         }
 
@@ -128,8 +128,8 @@ struct WeatherDetailSheet: View {
         case .wind: return viewModel.windSpeedString
         case .pressure: return viewModel.pressureString
         case .visibility: return viewModel.visibilityString
-        case .sunrise: return viewModel.sunriseString
-        case .sunset: return viewModel.sunsetString
+        case .sun: return viewModel.sunriseString
+        case .moonPhase: return MoonPhaseCalculator.currentPhaseName()
         }
     }
 
@@ -139,8 +139,8 @@ struct WeatherDetailSheet: View {
         case .wind: return windDescription
         case .pressure: return pressureDescription
         case .visibility: return visibilityDescription
-        case .sunrise: return "Local Time"
-        case .sunset: return "Local Time"
+        case .sun: return "Local Time"
+        case .moonPhase: return "Current Phase"
         }
     }
 
@@ -153,8 +153,8 @@ struct WeatherDetailSheet: View {
             case .wind: windDetails
             case .pressure: pressureDetails
             case .visibility: visibilityDetails
-            case .sunrise: sunriseDetails
-            case .sunset: sunsetDetails
+            case .sun: sunDetails
+            case .moonPhase: moonPhaseDetails
             }
         }
         .background {
@@ -350,9 +350,9 @@ struct WeatherDetailSheet: View {
         }
     }
 
-    // MARK: - Sunrise Details
+    // MARK: - Sun Details (combined sunrise + sunset)
 
-    private var sunriseDetails: some View {
+    private var sunDetails: some View {
         Group {
             sunArcGraph
             detailRow(label: "Sunrise", value: viewModel.sunriseString)
@@ -371,24 +371,31 @@ struct WeatherDetailSheet: View {
         }
     }
 
-    // MARK: - Sunset Details
+    // MARK: - Moon Phase Details
 
-    private var sunsetDetails: some View {
-        Group {
-            sunArcGraph
-            detailRow(label: "Sunset", value: viewModel.sunsetString)
+    private var moonPhaseDetails: some View {
+        let phase = MoonPhaseCalculator.currentPhase()
+        return Group {
+            MoonArcView(
+                phase: phase,
+                timezoneOffset: viewModel.currentWeather?.timezone ?? 0
+            )
+            .padding(.horizontal, 12)
+            .padding(.vertical, 16)
+
+            detailRow(label: "Phase", value: phase.name)
             detailDivider
-            detailRow(label: "Sunrise", value: viewModel.sunriseString)
+            detailRow(label: "Illumination", value: "\(Int(phase.illumination * 100))%")
             detailDivider
-            detailRow(label: "Day Length", value: dayLengthString)
+            detailRow(label: "Age", value: String(format: "%.1f days", phase.age))
             detailDivider
-            detailRow(label: "Night Length", value: nightLengthString)
+            detailRow(label: "Next New Moon", value: MoonPhaseCalculator.nextPhaseDate(target: .newMoon))
             detailDivider
-            detailRow(label: "Currently", value: viewModel.isDaytime ? "Daytime" : "Nighttime")
+            detailRow(label: "Next Full Moon", value: MoonPhaseCalculator.nextPhaseDate(target: .fullMoon))
             detailDivider
-            detailRow(label: "Golden Hour (AM)", value: goldenHourString(isSunrise: true))
+            detailRow(label: "Next First Quarter", value: MoonPhaseCalculator.nextPhaseDate(target: .firstQuarter))
             detailDivider
-            detailRow(label: "Golden Hour (PM)", value: goldenHourString(isSunrise: false))
+            detailRow(label: "Next Last Quarter", value: MoonPhaseCalculator.nextPhaseDate(target: .lastQuarter))
         }
     }
 

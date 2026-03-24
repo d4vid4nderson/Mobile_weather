@@ -36,6 +36,8 @@
 		A1001C01 /* WeatherEffectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001C00 /* WeatherEffectsView.swift */; };
 		A1001D01 /* WindGustView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001D00 /* WindGustView.swift */; };
 		A1001E01 /* WindArrowOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001E00 /* WindArrowOverlayView.swift */; };
+		A1001F01 /* MoonPhaseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1001F00 /* MoonPhaseCalculator.swift */; };
+		A1002001 /* MoonArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1002000 /* MoonArcView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +72,8 @@
 		A1001C00 /* WeatherEffectsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherEffectsView.swift; sourceTree = "<group>"; };
 		A1001D00 /* WindGustView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindGustView.swift; sourceTree = "<group>"; };
 		A1001E00 /* WindArrowOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindArrowOverlayView.swift; sourceTree = "<group>"; };
+		A1001F00 /* MoonPhaseCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPhaseCalculator.swift; sourceTree = "<group>"; };
+		A1002000 /* MoonArcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonArcView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +166,7 @@
 				A1001C00 /* WeatherEffectsView.swift */,
 				A1001D00 /* WindGustView.swift */,
 				A1001E00 /* WindArrowOverlayView.swift */,
+				A1002000 /* MoonArcView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 				A1000B00 /* WeatherIconMapper.swift */,
 				A1000C00 /* DateFormatter+Extensions.swift */,
 				A1000D00 /* Color+Extensions.swift */,
+				A1001F00 /* MoonPhaseCalculator.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -273,6 +279,8 @@
 				A1001C01 /* WeatherEffectsView.swift in Sources */,
 				A1001D01 /* WindGustView.swift in Sources */,
 				A1001E01 /* WindArrowOverlayView.swift in Sources */,
+				A1001F01 /* MoonPhaseCalculator.swift in Sources */,
+				A1002001 /* MoonArcView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
