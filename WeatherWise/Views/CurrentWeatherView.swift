@@ -136,7 +136,8 @@ struct CurrentWeatherView: View {
                 WeatherDetailCard(
                     icon: "sun.max.fill",
                     title: "SUNRISE / SUNSET",
-                    value: "\(viewModel.sunriseString) / \(viewModel.sunsetString)"
+                    value: "\(viewModel.sunriseString) / \(viewModel.sunsetString)",
+                    subtitle: viewModel.daylightDurationString
                 )
             }
             .buttonStyle(.plain)

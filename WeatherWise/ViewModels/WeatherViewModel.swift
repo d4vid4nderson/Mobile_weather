@@ -204,6 +204,15 @@ final class WeatherViewModel: ObservableObject {
         return sunset.asDate.formattedTime(timezoneOffset: currentWeather?.timezone ?? 0)
     }
 
+    var daylightDurationString: String {
+        guard let sunrise = currentWeather?.sys.sunrise,
+              let sunset = currentWeather?.sys.sunset else { return "" }
+        let seconds = sunset - sunrise
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        return "\(hours)h \(minutes)m of daylight"
+    }
+
     var countryCode: String {
         currentWeather?.sys.country ?? ""
     }
