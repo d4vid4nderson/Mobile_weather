@@ -112,57 +112,130 @@ struct ForecastView: View {
 
     private var hourlySection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("HOURLY FORECAST", systemImage: "clock")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(Color.onGradientSecondary)
-                .padding(.horizontal, 20)
+            HStack {
+                Label("HOURLY FORECAST", systemImage: "clock")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.onGradientSecondary)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(viewModel.hourlyForecast) { item in
-                        hourlyItemView(item)
+                Spacer()
+
+                // Legend
+                HStack(spacing: 12) {
+                    HStack(spacing: 4) {
+                        Circle().fill(Color.onGradientPrimary).frame(width: 6, height: 6)
+                        Text("Forecast")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.onGradientSecondary)
+                    }
+                    HStack(spacing: 4) {
+                        Circle().fill(Color.green).frame(width: 6, height: 6)
+                        Text("Actual")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.onGradientSecondary)
                     }
                 }
-                .padding(.horizontal, 20)
+            }
+            .padding(.horizontal, 20)
+
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 4) {
+                        ForEach(viewModel.fullHourlyTimeline) { item in
+                            hourlyTimelineItem(item)
+                                .id(item.id)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                }
+                .onAppear {
+                    // Scroll to "Now" on appear
+                    if let nowItem = viewModel.fullHourlyTimeline.first(where: { $0.isNow }) {
+                        proxy.scrollTo(nowItem.id, anchor: .center)
+                    }
+                }
             }
         }
         .padding(.vertical, 16)
         .background(Color.onGradientCard)
     }
 
-    private func hourlyItemView(_ item: ForecastItem) -> some View {
+    private func hourlyTimelineItem(_ item: HourlyDisplayItem) -> some View {
         let timezone = viewModel.forecast?.city.timezone ?? 0
-        let icon = item.weather.first.map {
-            WeatherIconMapper.sfSymbol(for: $0.id, icon: $0.icon)
-        } ?? "sun.max.fill"
 
-        return VStack(spacing: 10) {
-            Text(item.dt.asDate.formattedHour(timezoneOffset: timezone))
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.onGradientSecondary)
+        return VStack(spacing: 6) {
+            // Time label
+            if item.isNow {
+                Text("Now")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.yellow)
+            } else {
+                Text(item.timestamp.asDate.formattedHour(timezoneOffset: timezone))
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(item.isPast ? Color.onGradientSecondary.opacity(0.6) : Color.onGradientSecondary)
+            }
 
-            Image(systemName: icon)
-                .font(.title2)
+            // Weather icon
+            Image(systemName: item.icon)
+                .font(.title3)
                 .symbolRenderingMode(.multicolor)
-                .frame(height: 30)
+                .frame(height: 26)
+                .opacity(item.isPast ? 0.6 : 1.0)
 
-            Text("\(Int(viewModel.convertTemp(item.main.temp).rounded()))°")
-                .font(.headline)
-                .foregroundStyle(Color.onGradientPrimary)
+            // Forecast temp
+            Text("\(Int(viewModel.convertTemp(item.forecastTemp).rounded()))°")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(item.isNow ? Color.yellow : Color.onGradientPrimary)
 
+            // Actual temp (shown for past items and now)
+            if let actual = item.actualTemp {
+                let diff = viewModel.convertTemp(actual) - viewModel.convertTemp(item.forecastTemp)
+                let diffRounded = Int(diff.rounded())
+                VStack(spacing: 2) {
+                    Text("\(Int(viewModel.convertTemp(actual).rounded()))°")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.green)
+
+                    if !item.isNow && diffRounded != 0 {
+                        Text(diffRounded > 0 ? "+\(diffRounded)°" : "\(diffRounded)°")
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundStyle(diffRounded > 0 ? .orange : .cyan)
+                    }
+                }
+            } else {
+                // Placeholder to keep alignment
+                VStack(spacing: 2) {
+                    Text(" ")
+                        .font(.caption2)
+                    Text(" ")
+                        .font(.system(size: 9))
+                }
+                .hidden()
+            }
+
+            // Rain probability
             if let pop = item.pop, pop > 0.1 {
                 HStack(spacing: 2) {
                     Image(systemName: "drop.fill")
-                        .font(.system(size: 8))
+                        .font(.system(size: 7))
                     Text("\(Int(pop * 100))%")
-                        .font(.caption2)
+                        .font(.system(size: 9))
                 }
                 .foregroundStyle(.cyan)
             }
         }
-        .frame(width: 60)
+        .frame(width: 56)
+        .padding(.vertical, 4)
+        .background {
+            if item.isNow {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.white.opacity(0.1))
+            }
+        }
     }
 
     // MARK: - Daily Forecast

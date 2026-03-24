@@ -130,6 +130,18 @@ struct ForecastCity: Codable {
     let sunset: Int?
 }
 
+// MARK: - Hourly Display Item (for combined past/present/future timeline)
+struct HourlyDisplayItem: Identifiable {
+    let id: Int
+    let timestamp: Int
+    let forecastTemp: Double
+    let actualTemp: Double?  // non-nil for past hours and "now"
+    let icon: String
+    let pop: Double?
+    let isPast: Bool
+    let isNow: Bool
+}
+
 // MARK: - Air Quality Response
 struct AirQualityResponse: Codable {
     let coord: Coordinate?

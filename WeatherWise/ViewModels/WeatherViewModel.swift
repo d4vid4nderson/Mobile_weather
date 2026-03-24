@@ -213,6 +213,82 @@ final class WeatherViewModel: ObservableObject {
         )
     }
 
+    /// Full hourly timeline: past items from today + "Now" + future items
+    var fullHourlyTimeline: [HourlyDisplayItem] {
+        guard let list = forecast?.list else { return [] }
+        let now = Date().timeIntervalSince1970
+        let timezone = forecast?.city.timezone ?? 0
+
+        // Get today's date key
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(secondsFromGMT: timezone)
+        let todayKey = formatter.string(from: Date())
+
+        var items: [HourlyDisplayItem] = []
+
+        // Past forecast items from today
+        let pastItems = list.filter { item in
+            Double(item.dt) <= now && formatter.string(from: item.dt.asDate) == todayKey
+        }
+        for item in pastItems {
+            let icon = item.weather.first.map {
+                WeatherIconMapper.sfSymbol(for: $0.id, icon: $0.icon)
+            } ?? "sun.max.fill"
+            items.append(HourlyDisplayItem(
+                id: item.dt,
+                timestamp: item.dt,
+                forecastTemp: item.main.temp,
+                actualTemp: item.main.temp, // Past forecast = what actually happened
+                icon: icon,
+                pop: item.pop,
+                isPast: true,
+                isNow: false
+            ))
+        }
+
+        // "Now" item from current weather
+        if let weather = currentWeather {
+            let icon = weather.weather.first.map {
+                WeatherIconMapper.sfSymbol(for: $0.id, icon: $0.icon)
+            } ?? "sun.max.fill"
+            // Find nearest forecast item for predicted temp
+            let nearestForecast = list.min(by: {
+                abs(Double($0.dt) - now) < abs(Double($1.dt) - now)
+            })
+            items.append(HourlyDisplayItem(
+                id: Int(now),
+                timestamp: Int(now),
+                forecastTemp: nearestForecast?.main.temp ?? weather.main.temp,
+                actualTemp: weather.main.temp,
+                icon: icon,
+                pop: nil,
+                isPast: false,
+                isNow: true
+            ))
+        }
+
+        // Future items (next 8)
+        let futureItems = Array(list.filter { Double($0.dt) > now }.prefix(8))
+        for item in futureItems {
+            let icon = item.weather.first.map {
+                WeatherIconMapper.sfSymbol(for: $0.id, icon: $0.icon)
+            } ?? "sun.max.fill"
+            items.append(HourlyDisplayItem(
+                id: item.dt,
+                timestamp: item.dt,
+                forecastTemp: item.main.temp,
+                actualTemp: nil,
+                icon: icon,
+                pop: item.pop,
+                isPast: false,
+                isNow: false
+            ))
+        }
+
+        return items
+    }
+
     var dailyForecast: [DailyForecast] {
         guard let list = forecast?.list else { return [] }
         let timezone = forecast?.city.timezone ?? 0
