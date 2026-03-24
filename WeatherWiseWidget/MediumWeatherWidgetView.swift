@@ -44,7 +44,7 @@ struct MediumWeatherWidgetView: View {
                 Spacer()
 
                 Text("\(temp)")
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.system(size: 64, weight: .bold))
                     .foregroundStyle(.white)
                     .minimumScaleFactor(0.6)
 
