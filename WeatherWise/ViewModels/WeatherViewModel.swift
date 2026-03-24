@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 import CoreLocation
+import WidgetKit
 
 // MARK: - User Settings Enums
 
@@ -437,8 +438,105 @@ final class WeatherViewModel: ObservableObject {
 
         isLoading = false
 
+        // Write widget data to shared container
+        writeWidgetData()
+
         // Also fetch NWS alerts
         await fetchAlerts()
+    }
+
+    // MARK: - Widget Data Sharing
+
+    private func writeWidgetData() {
+        guard let weather = currentWeather, let forecastData = forecast else { return }
+
+        // Write location and settings to shared UserDefaults
+        let sharedDefaults = SharedConstants.sharedDefaults
+        sharedDefaults?.set(weather.coord.lat, forKey: SharedConstants.defaultLocationLatKey)
+        sharedDefaults?.set(weather.coord.lon, forKey: SharedConstants.defaultLocationLonKey)
+        sharedDefaults?.set(weather.name, forKey: SharedConstants.defaultLocationNameKey)
+        sharedDefaults?.set(temperatureUnit.rawValue, forKey: SharedConstants.temperatureUnitKey)
+
+        // Build and save widget snapshot
+        let timezone = weather.timezone
+        let now = Date().timeIntervalSince1970
+
+        let hourlyItems = Array(
+            forecastData.list
+                .filter { Double($0.dt) > now }
+                .prefix(4)
+        )
+        let hourlySnapshots = hourlyItems.map { item in
+            HourlySnapshot(
+                dt: item.dt,
+                temp: item.main.temp,
+                conditionId: item.weather.first?.id ?? 800,
+                conditionIcon: item.weather.first?.icon ?? "01d",
+                pop: item.pop ?? 0
+            )
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(secondsFromGMT: timezone)
+
+        let dayNameFormatter = DateFormatter()
+        dayNameFormatter.dateFormat = "EEE"
+        dayNameFormatter.timeZone = TimeZone(secondsFromGMT: timezone)
+
+        var dailyDict: [String: [ForecastItem]] = [:]
+        for item in forecastData.list {
+            let dateKey = formatter.string(from: Date(timeIntervalSince1970: TimeInterval(item.dt)))
+            dailyDict[dateKey, default: []].append(item)
+        }
+
+        let todayKey = formatter.string(from: Date())
+        let dailySnapshots = dailyDict
+            .filter { $0.key != todayKey }
+            .sorted { $0.key < $1.key }
+            .prefix(5)
+            .enumerated()
+            .map { (index, entry) in
+                let items = entry.value
+                let highTemp = items.map(\.main.tempMax).max() ?? 0
+                let lowTemp = items.map(\.main.tempMin).min() ?? 0
+                let midday = items.min { abs($0.dt - (items.first!.dt + 43200)) < abs($1.dt - (items.first!.dt + 43200)) }
+                let condition = midday?.weather.first ?? items.first!.weather.first!
+                let date = Date(timeIntervalSince1970: TimeInterval(items.first!.dt))
+                let pop = items.map { $0.pop ?? 0 }.max() ?? 0
+
+                return DailySnapshot(
+                    id: index,
+                    dayName: dayNameFormatter.string(from: date),
+                    highTemp: highTemp,
+                    lowTemp: lowTemp,
+                    conditionId: condition.id,
+                    conditionIcon: condition.icon,
+                    pop: pop
+                )
+            }
+
+        let condition = weather.weather.first
+        let snapshot = WidgetWeatherSnapshot(
+            cityName: weather.name,
+            currentTemp: weather.main.temp,
+            tempMin: weather.main.tempMin,
+            tempMax: weather.main.tempMax,
+            conditionId: condition?.id ?? 800,
+            conditionIcon: condition?.icon ?? "01d",
+            conditionDescription: condition?.description.capitalized ?? "Clear",
+            humidity: weather.main.humidity,
+            windSpeed: weather.wind.speed,
+            timestamp: Date(),
+            timezone: timezone,
+            sunrise: weather.sys.sunrise ?? 0,
+            sunset: weather.sys.sunset ?? 0,
+            hourlyForecast: hourlySnapshots,
+            dailyForecast: Array(dailySnapshots)
+        )
+
+        saveWidgetSnapshot(snapshot)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func searchCity() {
