@@ -54,7 +54,10 @@ struct ContentView: View {
                 .tag(1)
 
             alertsTab
-                .environment(\.colorScheme, .dark)
+                .background {
+                    Color(.systemBackground)
+                        .ignoresSafeArea()
+                }
                 .tabItem {
                     Image(systemName: "exclamationmark.triangle.fill")
                     Text("Alerts")

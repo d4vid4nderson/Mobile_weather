@@ -5,12 +5,13 @@ import SwiftUI
 /// Full-screen view displaying all active severe weather alerts for Wise County.
 struct AlertsView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
+    @Environment(\.colorScheme) var colorScheme
 
     @State private var expandedAlertID: String?
 
     var body: some View {
         ZStack {
-            backgroundGradient
+            alertsBackground
                 .ignoresSafeArea()
 
             ScrollView {
@@ -24,33 +25,25 @@ struct AlertsView: View {
                 await viewModel.refreshAlerts()
             }
         }
-        .preferredColorScheme(.dark)
     }
 
     // MARK: - Background
 
     @ViewBuilder
-    private var backgroundGradient: some View {
+    private var alertsBackground: some View {
         if hasCriticalAlerts {
             LinearGradient(
                 colors: [
                     mostSevereSeverity == .extreme
-                        ? Color.red.opacity(0.4)
-                        : Color.orange.opacity(0.3),
-                    Color.black.opacity(0.95)
+                        ? Color.red.opacity(colorScheme == .dark ? 0.4 : 0.15)
+                        : Color.orange.opacity(colorScheme == .dark ? 0.3 : 0.12),
+                    Color(.systemBackground)
                 ],
                 startPoint: .top,
                 endPoint: .bottom
             )
         } else {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.05, green: 0.1, blue: 0.2),
-                    Color.black.opacity(0.95)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
+            Color(.systemBackground)
         }
     }
 
@@ -61,11 +54,11 @@ struct AlertsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Severe Weather Alerts")
                     .font(.title.bold())
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
 
                 Text("Wise County, Texas")
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
@@ -79,7 +72,6 @@ struct AlertsView: View {
         Group {
             if viewModel.isLoadingAlerts {
                 ProgressView()
-                    .tint(.white)
             } else {
                 Text("\(viewModel.alerts.count)")
                     .font(.title2.bold())
@@ -117,10 +109,9 @@ struct AlertsView: View {
         VStack(spacing: 16) {
             ProgressView()
                 .scaleEffect(1.5)
-                .tint(.white)
             Text("Checking for alerts...")
                 .font(.headline)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, minHeight: 300)
     }
@@ -137,7 +128,7 @@ struct AlertsView: View {
 
             Text("No active weather alerts for Wise County.")
                 .font(.body)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, minHeight: 300)
@@ -210,12 +201,12 @@ struct AlertCardView: View {
 
                     Text(alert.properties.event)
                         .font(.headline.bold())
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
 
                     Spacer()
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundStyle(.white.opacity(0.5))
+                        .foregroundStyle(.secondary)
                         .font(.caption)
                 }
 
@@ -233,7 +224,7 @@ struct AlertCardView: View {
                 // Areas affected
                 Text(alert.properties.areaDesc)
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.8))
+                    .foregroundStyle(.secondary)
                     .lineLimit(isExpanded ? nil : 2)
 
                 // Time range
@@ -243,7 +234,7 @@ struct AlertCardView: View {
                     Text(alert.formattedTimeRange)
                         .font(.caption)
                 }
-                .foregroundStyle(.white.opacity(0.6))
+                .foregroundStyle(.secondary)
 
                 // Expanded detail
                 if isExpanded {
@@ -254,7 +245,7 @@ struct AlertCardView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white.opacity(0.08))
+                .fill(Color(.secondarySystemGroupedBackground))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .strokeBorder(
@@ -269,13 +260,12 @@ struct AlertCardView: View {
     @ViewBuilder
     private var expandedContent: some View {
         Divider()
-            .background(Color.white.opacity(0.2))
 
         // Headline
         if let headline = alert.properties.headline, !headline.isEmpty {
             Text(headline)
                 .font(.subheadline.bold())
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .padding(.bottom, 4)
         }
 
@@ -288,7 +278,7 @@ struct AlertCardView: View {
 
                 Text(description)
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -302,7 +292,7 @@ struct AlertCardView: View {
 
                 Text(instruction)
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(8)
@@ -316,7 +306,7 @@ struct AlertCardView: View {
         if let sender = alert.properties.senderName {
             Text("Source: \(sender)")
                 .font(.caption2)
-                .foregroundStyle(.white.opacity(0.4))
+                .foregroundStyle(Color(.tertiaryLabel))
         }
     }
 }
