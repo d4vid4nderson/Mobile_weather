@@ -60,6 +60,7 @@
 		A1003001 /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000200 /* WeatherModels.swift */; };
 		A1003101 /* WeatherIconMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000B00 /* WeatherIconMapper.swift */; };
 		A1003201 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000C00 /* DateFormatter+Extensions.swift */; };
+		A1004601 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004600 /* AppIconView.swift */; };
 		/* Moon widget files in widget target */
 		A1004001 /* MoonPhaseCalculator+Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004000 /* MoonPhaseCalculator+Widget.swift */; };
 		A1004101 /* MoonTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004100 /* MoonTimelineEntry.swift */; };
@@ -148,6 +149,7 @@
 		A1002E00 /* WeatherWiseWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherWiseWidget.entitlements; sourceTree = "<group>"; };
 		/* Widget Info.plist */
 		A1002F00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1004600 /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 		/* Moon widget files */
 		A1004000 /* MoonPhaseCalculator+Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoonPhaseCalculator+Widget.swift"; sourceTree = "<group>"; };
 		A1004100 /* MoonTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonTimelineEntry.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				A1001E00 /* WindArrowOverlayView.swift */,
 				A1002000 /* MoonArcView.swift */,
 				A1002100 /* RadarDataGraphView.swift */,
+				A1004600 /* AppIconView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				A1002201 /* SharedConstants.swift in Sources */,
 				A1002301 /* SharedWeatherData.swift in Sources */,
 				A1002401 /* SharedWeatherService.swift in Sources */,
+				A1004601 /* AppIconView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
