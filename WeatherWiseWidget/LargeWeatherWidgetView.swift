@@ -36,7 +36,7 @@ struct LargeWeatherWidgetView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 0) {
             // MARK: - Header: city + condition
             HStack(spacing: 4) {
                 Image(systemName: WeatherIconMapper.sfSymbol(for: snapshot.conditionId, icon: snapshot.conditionIcon))
@@ -48,6 +48,7 @@ struct LargeWeatherWidgetView: View {
                     .foregroundStyle(.white)
                     .lineLimit(1)
             }
+            .padding(.bottom, 2)
 
             // MARK: - Temperature + description
             HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -67,6 +68,7 @@ struct LargeWeatherWidgetView: View {
                         .foregroundStyle(.white.opacity(0.7))
                 }
             }
+            .padding(.bottom, 2)
 
             // MARK: - Stats row
             HStack(spacing: 16) {
@@ -93,6 +95,7 @@ struct LargeWeatherWidgetView: View {
 
             // MARK: - Hourly forecast
             Divider().overlay(.white.opacity(0.3))
+                .padding(.vertical, 6)
 
             HStack(spacing: 0) {
                 ForEach(snapshot.hourlyForecast.prefix(4)) { hour in
@@ -117,24 +120,25 @@ struct LargeWeatherWidgetView: View {
 
             // MARK: - Daily forecast
             Divider().overlay(.white.opacity(0.3))
+                .padding(.vertical, 6)
 
-            VStack(spacing: 4) {
+            VStack(spacing: 0) {
                 ForEach(snapshot.dailyForecast.prefix(5)) { day in
                     HStack(spacing: 6) {
                         Text(day.dayName)
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundStyle(.white)
-                            .frame(width: 30, alignment: .leading)
+                            .frame(width: 36, alignment: .leading)
 
                         Image(systemName: WeatherIconMapper.sfSymbol(for: day.conditionId, icon: day.conditionIcon))
                             .symbolRenderingMode(.multicolor)
-                            .font(.caption)
-                            .frame(width: 20)
+                            .font(.subheadline)
+                            .frame(width: 24)
 
                         Text("\(convertTemperature(day.lowTemp, to: entry.temperatureUnit))\u{00B0}")
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.6))
-                            .frame(width: 28, alignment: .trailing)
+                            .frame(width: 32, alignment: .trailing)
 
                         // Gradient temperature bar
                         GeometryReader { geometry in
@@ -151,18 +155,19 @@ struct LargeWeatherWidgetView: View {
                                         endPoint: .trailing
                                     )
                                 )
-                                .frame(height: 4)
+                                .frame(height: 5)
                                 .padding(.leading, leftOffset)
                                 .padding(.trailing, rightOffset)
                                 .frame(maxHeight: .infinity, alignment: .center)
                         }
-                        .frame(height: 14)
+                        .frame(height: 18)
 
                         Text("\(convertTemperature(day.highTemp, to: entry.temperatureUnit))\u{00B0}")
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundStyle(.white)
-                            .frame(width: 28, alignment: .trailing)
+                            .frame(width: 32, alignment: .trailing)
                     }
+                    .frame(maxHeight: .infinity)
                 }
             }
         }
