@@ -20,6 +20,7 @@ struct ContentView: View {
             }
         }
         .preferredColorScheme(viewModel.appearance.colorScheme)
+        .environment(\.colorScheme, .dark)
         .onAppear {
             viewModel.fetchWeather()
         }
@@ -34,6 +35,11 @@ struct ContentView: View {
     private var mainContent: some View {
         TabView(selection: $selectedTab) {
             weatherTab
+                .background {
+                    viewModel.backgroundGradient
+                        .ignoresSafeArea()
+                        .animation(.easeInOut(duration: 1.5), value: viewModel.currentWeather?.weather.first?.id)
+                }
                 .tabItem {
                     Image(systemName: "cloud.sun.fill")
                     Text("Weather")
@@ -56,6 +62,10 @@ struct ContentView: View {
 
             SettingsView()
                 .environmentObject(viewModel)
+                .background {
+                    Color(.systemGroupedBackground)
+                        .ignoresSafeArea()
+                }
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")
