@@ -55,6 +55,7 @@ final class WeatherViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var cityName: String = ""
     @Published var stateName: String = ""
+    @Published var countyName: String = ""
     /// Cached past forecast items from today (accumulated across refreshes)
     @Published var cachedPastItems: [ForecastItem] = []
     private var cachedDateKey: String = ""
@@ -435,12 +436,13 @@ final class WeatherViewModel: ObservableObject {
             self.cityName = weather.name
             cachePastForecastItems(from: forecastResult)
 
-            // Reverse geocode to get state name
+            // Reverse geocode to get state name and county
             if let geo = try? await weatherService.reverseGeocode(lat: lat, lon: lon) {
                 self.stateName = geo.state ?? ""
             } else {
                 self.stateName = ""
             }
+            await fetchCountyName(lat: lat, lon: lon)
         } catch {
             self.errorMessage = error.localizedDescription
         }
@@ -574,6 +576,7 @@ final class WeatherViewModel: ObservableObject {
                 } else {
                     self.stateName = ""
                 }
+                await fetchCountyName(lat: coord.lat, lon: coord.lon)
 
                 addRecentSearch(trimmed)
             } catch {
@@ -627,6 +630,17 @@ final class WeatherViewModel: ObservableObject {
         addRecentSearch(city.name)
         Task {
             await fetchWeather(lat: city.lat, lon: city.lon)
+        }
+    }
+
+    private func fetchCountyName(lat: Double, lon: Double) async {
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: lat, longitude: lon)
+        if let placemarks = try? await geocoder.reverseGeocodeLocation(location),
+           let county = placemarks.first?.subAdministrativeArea {
+            self.countyName = county
+        } else {
+            self.countyName = ""
         }
     }
 

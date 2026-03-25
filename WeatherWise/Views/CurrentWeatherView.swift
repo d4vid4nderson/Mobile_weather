@@ -37,10 +37,10 @@ struct CurrentWeatherView: View {
             if !viewModel.stateName.isEmpty || !viewModel.countryCode.isEmpty {
                 HStack(spacing: 4) {
                     if !viewModel.stateName.isEmpty {
-                        Text(viewModel.stateName)
-                        if viewModel.cityName.lowercased().contains("decatur") ||
-                           viewModel.cityName.lowercased().contains("wise") {
-                            Text("- Wise County")
+                        if !viewModel.countyName.isEmpty {
+                            Text("\(viewModel.stateName) - \(viewModel.countyName)")
+                        } else {
+                            Text(viewModel.stateName)
                         }
                     } else {
                         Text(viewModel.countryCode)
