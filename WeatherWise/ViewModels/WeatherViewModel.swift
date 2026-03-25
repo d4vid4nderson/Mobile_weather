@@ -729,8 +729,13 @@ final class WeatherViewModel: ObservableObject {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: lat, longitude: lon)
         if let placemarks = try? await geocoder.reverseGeocodeLocation(location),
-           let county = placemarks.first?.subAdministrativeArea {
-            self.countyName = county
+           let placemark = placemarks.first {
+            self.countyName = placemark.subAdministrativeArea ?? ""
+            // Prefer CLGeocoder's locality (actual city) over the API name,
+            // which sometimes returns the county instead of the city.
+            if let locality = placemark.locality, !locality.isEmpty {
+                self.cityName = locality
+            }
         } else {
             self.countyName = ""
         }
