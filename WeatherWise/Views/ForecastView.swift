@@ -3,7 +3,7 @@ import SwiftUI
 struct ForecastView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
     @State private var selectedDayRange: ForecastRange = .fiveDay
-    @State private var expandedDayId: UUID?
+    @State private var expandedDayId: String?
 
     enum ForecastRange: String, CaseIterable {
         case fiveDay = "5-Day"

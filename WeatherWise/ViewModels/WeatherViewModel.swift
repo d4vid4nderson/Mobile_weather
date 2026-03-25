@@ -379,6 +379,7 @@ final class WeatherViewModel: ObservableObject {
                 )
 
                 return DailyForecast(
+                    dateKey: key,
                     date: date,
                     highTemp: highTemp,
                     lowTemp: lowTemp,
@@ -912,7 +913,8 @@ final class WeatherViewModel: ObservableObject {
 
 // MARK: - Daily Forecast Model
 struct DailyForecast: Identifiable {
-    let id = UUID()
+    var id: String { dateKey }
+    let dateKey: String   // "yyyy-MM-dd" – stable across re-renders
     let date: Date
     let highTemp: Double
     let lowTemp: Double
