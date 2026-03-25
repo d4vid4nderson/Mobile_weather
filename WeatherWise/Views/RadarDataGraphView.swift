@@ -102,47 +102,41 @@ struct RadarDataGraphView: View {
                 .foregroundColor(.white)
 
                 // Bar chart
-                GeometryReader { geo in
-                    let barWidth = max((geo.size.width - CGFloat(points.count - 1) * 4) / CGFloat(points.count), 10)
-                    let height = geo.size.height - 16 // leave room for labels
+                HStack(alignment: .bottom, spacing: 4) {
+                    ForEach(Array(points.enumerated()), id: \.offset) { index, point in
+                        VStack(spacing: 2) {
+                            // Value label on top of bar
+                            Text(point.rawValue)
+                                .font(.system(size: 8, weight: .medium, design: .monospaced))
+                                .foregroundColor(.white.opacity(0.7))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
 
-                    HStack(alignment: .bottom, spacing: 4) {
-                        ForEach(Array(points.enumerated()), id: \.offset) { index, point in
-                            VStack(spacing: 2) {
-                                // Value label on top of bar
-                                Text(point.rawValue)
-                                    .font(.system(size: 8, weight: .medium, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.7))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
+                            // Bar
+                            let normalized = graphMax > graphMin
+                                ? CGFloat((point.value - graphMin) / (graphMax - graphMin))
+                                : 0.5
+                            let barHeight = max(normalized * 60, 4)
 
-                                // Bar
-                                let normalized = graphMax > graphMin
-                                    ? CGFloat((point.value - graphMin) / (graphMax - graphMin))
-                                    : 0.5
-                                let barHeight = max(normalized * height * 0.75, 4)
-
-                                RoundedRectangle(cornerRadius: 3)
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [barColor.opacity(0.8), barColor.opacity(0.4)],
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        )
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [barColor.opacity(0.8), barColor.opacity(0.4)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
                                     )
-                                    .frame(width: barWidth, height: barHeight)
+                                )
+                                .frame(height: barHeight)
 
-                                // Time label
-                                Text(point.label)
-                                    .font(.system(size: 8, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.5))
-                                    .lineLimit(1)
-                            }
+                            // Time label
+                            Text(point.label)
+                                .font(.system(size: 8, weight: .medium))
+                                .foregroundColor(.white.opacity(0.5))
+                                .lineLimit(1)
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
-                .frame(height: 100)
             }
             .padding(12)
             .background(
