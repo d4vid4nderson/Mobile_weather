@@ -34,6 +34,7 @@ struct ContentView: View {
     private var mainContent: some View {
         TabView(selection: $selectedTab) {
             weatherTab
+                .environment(\.colorScheme, .dark)
                 .background {
                     viewModel.backgroundGradient
                         .ignoresSafeArea()
