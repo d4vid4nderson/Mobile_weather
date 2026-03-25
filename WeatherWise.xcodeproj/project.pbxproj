@@ -61,6 +61,7 @@
 		A1003101 /* WeatherIconMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000B00 /* WeatherIconMapper.swift */; };
 		A1003201 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000C00 /* DateFormatter+Extensions.swift */; };
 		A1004601 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004600 /* AppIconView.swift */; };
+		A1004701 /* MoonPhaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004700 /* MoonPhaseView.swift */; };
 		/* Moon widget files in widget target */
 		A1004001 /* MoonPhaseCalculator+Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004000 /* MoonPhaseCalculator+Widget.swift */; };
 		A1004101 /* MoonTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1004100 /* MoonTimelineEntry.swift */; };
@@ -150,6 +151,7 @@
 		/* Widget Info.plist */
 		A1002F00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1004600 /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
+		A1004700 /* MoonPhaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPhaseView.swift; sourceTree = "<group>"; };
 		/* Moon widget files */
 		A1004000 /* MoonPhaseCalculator+Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoonPhaseCalculator+Widget.swift"; sourceTree = "<group>"; };
 		A1004100 /* MoonTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonTimelineEntry.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				A1001D00 /* WindGustView.swift */,
 				A1001E00 /* WindArrowOverlayView.swift */,
 				A1002000 /* MoonArcView.swift */,
+				A1004700 /* MoonPhaseView.swift */,
 				A1002100 /* RadarDataGraphView.swift */,
 				A1004600 /* AppIconView.swift */,
 			);
@@ -442,6 +445,7 @@
 				A1001E01 /* WindArrowOverlayView.swift in Sources */,
 				A1001F01 /* MoonPhaseCalculator.swift in Sources */,
 				A1002001 /* MoonArcView.swift in Sources */,
+				A1004701 /* MoonPhaseView.swift in Sources */,
 				A1002101 /* RadarDataGraphView.swift in Sources */,
 				A1002201 /* SharedConstants.swift in Sources */,
 				A1002301 /* SharedWeatherData.swift in Sources */,
