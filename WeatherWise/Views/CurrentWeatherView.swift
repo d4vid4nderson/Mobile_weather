@@ -133,7 +133,7 @@ struct CurrentWeatherView: View {
             .buttonStyle(.plain)
 
             Button { selectedDetail = .sun } label: {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 0) {
                     Label {
                         Text("SUNRISE / SUNSET")
                             .font(.caption)
@@ -144,6 +144,8 @@ struct CurrentWeatherView: View {
                             .font(.caption)
                             .foregroundStyle(Color.onGradientSecondary)
                     }
+
+                    Spacer()
 
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 4) {
@@ -166,11 +168,13 @@ struct CurrentWeatherView: View {
                         }
                     }
 
+                    Spacer()
+
                     Text(viewModel.daylightDurationString)
                         .font(.caption)
                         .foregroundStyle(Color.onGradientSecondary)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 .padding(16)
                 .background {
                     RoundedRectangle(cornerRadius: 16)
@@ -184,12 +188,43 @@ struct CurrentWeatherView: View {
             .buttonStyle(.plain)
 
             Button { selectedDetail = .moonPhase } label: {
-                WeatherDetailCard(
-                    icon: MoonPhaseCalculator.currentPhase().icon,
-                    title: "MOON PHASE",
-                    value: MoonPhaseCalculator.currentPhaseName(),
-                    subtitle: "\(Int(MoonPhaseCalculator.currentPhase().illumination * 100))% illuminated"
-                )
+                VStack(alignment: .leading, spacing: 0) {
+                    Label {
+                        Text("MOON PHASE")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientSecondary)
+                    } icon: {
+                        Image(systemName: MoonPhaseCalculator.currentPhase().icon)
+                            .font(.caption)
+                            .foregroundStyle(Color.onGradientSecondary)
+                    }
+
+                    Spacer()
+
+                    Text(MoonPhaseCalculator.currentPhaseName())
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.onGradientPrimary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+
+                    Spacer()
+
+                    Text("\(Int(MoonPhaseCalculator.currentPhase().illumination * 100))% illuminated")
+                        .font(.caption)
+                        .foregroundStyle(Color.onGradientSecondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .padding(16)
+                .background {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.onGradientCard)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
+                        )
+                }
             }
             .buttonStyle(.plain)
         }
