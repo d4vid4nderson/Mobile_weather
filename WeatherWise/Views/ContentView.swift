@@ -77,14 +77,14 @@ struct ContentView: View {
                 }
                 .tag(3)
         }
-        .overlay(alignment: .topTrailing) {
-            if selectedTab == 0 {
-                searchButton
-            }
-        }
         .overlay(alignment: .topLeading) {
             if selectedTab == 0 {
                 quickLocationBar
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            if selectedTab == 0 {
+                searchButton
             }
         }
     }
@@ -208,7 +208,7 @@ struct ContentView: View {
                 }
             }
             .padding(.leading, 20)
-            .padding(.trailing, 8)
+            .padding(.trailing, 56)
         }
         .padding(.top, 8)
     }
