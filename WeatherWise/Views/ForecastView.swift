@@ -323,10 +323,10 @@ struct ForecastView: View {
             }
             .buttonStyle(.plain)
 
-            if isExpanded {
-                dailyDetailView(day)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-            }
+            dailyDetailView(day)
+                .frame(maxHeight: isExpanded ? nil : 0, alignment: .top)
+                .clipped()
+                .opacity(isExpanded ? 1 : 0)
         }
     }
 
