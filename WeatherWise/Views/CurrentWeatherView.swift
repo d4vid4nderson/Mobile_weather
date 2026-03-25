@@ -188,43 +188,59 @@ struct CurrentWeatherView: View {
             .buttonStyle(.plain)
 
             Button { selectedDetail = .moonPhase } label: {
-                VStack(alignment: .leading, spacing: 0) {
-                    Label {
-                        Text("MOON PHASE")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.onGradientSecondary)
-                    } icon: {
-                        Image(systemName: MoonPhaseCalculator.currentPhase().icon)
-                            .font(.caption)
-                            .foregroundStyle(Color.onGradientSecondary)
-                    }
-
-                    Spacer()
-
-                    Text(MoonPhaseCalculator.currentPhaseName())
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.onGradientPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-
-                    Spacer()
-
-                    Text("\(Int(MoonPhaseCalculator.currentPhase().illumination * 100))% illuminated")
-                        .font(.caption)
-                        .foregroundStyle(Color.onGradientSecondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                .padding(16)
-                .background {
+                let currentMoon = MoonPhaseCalculator.currentPhase()
+                ZStack {
+                    // Card background
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.onGradientCard)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
                         )
+
+                    // Moon image positioned to the trailing side
+                    HStack {
+                        Spacer()
+                        MoonPhaseView(phase: currentMoon)
+                            .frame(width: 90, height: 90)
+                            .opacity(0.35)
+                            .offset(x: 10, y: 8)
+                    }
+                    .clipped()
+
+                    // Text content over the moon
+                    VStack(alignment: .leading, spacing: 0) {
+                        Label {
+                            Text("MOON PHASE")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color.onGradientSecondary)
+                        } icon: {
+                            Image(systemName: currentMoon.icon)
+                                .font(.caption)
+                                .foregroundStyle(Color.onGradientSecondary)
+                        }
+
+                        Spacer()
+
+                        Text(currentMoon.name)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.onGradientPrimary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+
+                        Spacer()
+
+                        Text("\(Int(currentMoon.illumination * 100))% illuminated")
+                            .font(.caption)
+                            .foregroundStyle(Color.onGradientSecondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                    .padding(16)
                 }
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .buttonStyle(.plain)
         }
