@@ -189,7 +189,7 @@ struct CurrentWeatherView: View {
 
             Button { selectedDetail = .moonPhase } label: {
                 let currentMoon = MoonPhaseCalculator.currentPhase()
-                ZStack {
+                ZStack(alignment: .bottomTrailing) {
                     // Card background
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.onGradientCard)
@@ -198,17 +198,13 @@ struct CurrentWeatherView: View {
                                 .strokeBorder(Color.onGradientCardBorder, lineWidth: 1)
                         )
 
-                    // Moon image positioned to the trailing side
-                    HStack {
-                        Spacer()
-                        MoonPhaseView(phase: currentMoon)
-                            .frame(width: 90, height: 90)
-                            .opacity(0.35)
-                            .offset(x: 10, y: 8)
-                    }
-                    .clipped()
+                    // Moon image tucked into bottom-trailing corner
+                    MoonPhaseView(phase: currentMoon)
+                        .frame(width: 64, height: 64)
+                        .opacity(0.3)
+                        .padding(8)
 
-                    // Text content over the moon
+                    // Text content
                     VStack(alignment: .leading, spacing: 0) {
                         Label {
                             Text("MOON PHASE")

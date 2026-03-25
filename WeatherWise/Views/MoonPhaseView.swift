@@ -10,7 +10,6 @@ struct MoonPhaseView: View {
             let radius = diameter / 2
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
 
-            // Full moon disc (lit side)
             let moonRect = CGRect(
                 x: center.x - radius,
                 y: center.y - radius,
@@ -19,13 +18,20 @@ struct MoonPhaseView: View {
             )
             let moonPath = Path(ellipseIn: moonRect)
 
-            // Gradient for the lit surface
-            let litGradient = Gradient(colors: [
-                Color(red: 0.85, green: 0.83, blue: 0.78),
-                Color(red: 0.75, green: 0.73, blue: 0.68)
-            ])
+            // Draw the dark base (unlit moon)
             context.fill(
                 moonPath,
+                with: .color(Color(red: 0.08, green: 0.08, blue: 0.16))
+            )
+
+            // Draw the lit portion
+            let litPath = moonLitPath(center: center, radius: radius)
+            let litGradient = Gradient(colors: [
+                Color(red: 0.9, green: 0.88, blue: 0.82),
+                Color(red: 0.78, green: 0.76, blue: 0.70)
+            ])
+            context.fill(
+                litPath,
                 with: .linearGradient(
                     litGradient,
                     startPoint: CGPoint(x: center.x - radius, y: center.y - radius),
@@ -33,77 +39,78 @@ struct MoonPhaseView: View {
                 )
             )
 
-            // Shadow overlay for unlit portion
-            let shadowPath = moonShadowPath(center: center, radius: radius)
-            context.fill(
-                shadowPath,
-                with: .color(Color(red: 0.06, green: 0.06, blue: 0.14).opacity(0.92))
-            )
-
-            // Subtle crater-like texture dots
+            // Subtle craters on lit portion only
             drawCraters(context: &context, center: center, radius: radius)
 
-            // Soft outer glow
+            // Soft rim highlight
             context.stroke(
                 moonPath,
-                with: .color(.white.opacity(0.08)),
-                lineWidth: 2
+                with: .color(.white.opacity(0.12)),
+                lineWidth: 1.5
             )
         }
     }
 
-    /// Build the shadow path that covers the unlit part of the moon.
-    private func moonShadowPath(center: CGPoint, radius: CGFloat) -> Path {
-        let phaseValue = phase.phase // 0 = new, 0.5 = full, 1 = new again
+    /// Build the lit portion of the moon.
+    ///
+    /// The lit shape is bounded by the circular edge on one side
+    /// and an elliptical terminator on the other. The terminator's
+    /// x-radius varies from +radius (full) through 0 (quarter) to
+    /// -radius (new).
+    private func moonLitPath(center: CGPoint, radius: CGFloat) -> Path {
+        let phaseValue = phase.phase // 0.0 = new moon, 0.5 = full, 1.0 = new again
 
-        // terminatorX: -1 = fully shadowed (new), 0 = half, +1 = fully lit (full)
-        let terminatorX: CGFloat
+        // Convert phase to a terminator position:
+        // terminatorFraction: -1 = new (no lit), 0 = quarter, +1 = full
+        let terminatorFraction: CGFloat
         if phaseValue <= 0.5 {
-            // Waxing: shadow shrinks from right to left
-            terminatorX = CGFloat(phaseValue * 2.0 - 1.0) // -1 → 0
+            // Waxing: 0→0.5 maps to -1→+1
+            terminatorFraction = CGFloat(phaseValue * 4.0 - 1.0)
         } else {
-            // Waning: shadow grows from right to left
-            terminatorX = CGFloat((1.0 - phaseValue) * 2.0 - 1.0) // 0 → -1
+            // Waning: 0.5→1 maps to +1→-1
+            terminatorFraction = CGFloat((1.0 - phaseValue) * 4.0 - 1.0)
         }
 
+        let steps = 90
         var path = Path()
-        let steps = 64
 
         if phaseValue <= 0.5 {
-            // Waxing: shadow on the LEFT side
-            // Left arc of the moon (always in shadow during waxing)
+            // Waxing: lit on the RIGHT side
+            // Right circular arc from top to bottom
             for i in 0...steps {
-                let angle = CGFloat.pi / 2 + CGFloat(i) / CGFloat(steps) * CGFloat.pi
-                let x = center.x + radius * cos(angle)
-                let y = center.y + radius * sin(angle)
-                if i == 0 { path.move(to: CGPoint(x: x, y: y)) }
-                else { path.addLine(to: CGPoint(x: x, y: y)) }
-            }
-            // Terminator line (elliptical edge of shadow)
-            for i in (0...steps).reversed() {
                 let t = CGFloat(i) / CGFloat(steps)
-                let angle = CGFloat.pi / 2 + t * CGFloat.pi
-                let y = center.y + radius * sin(angle)
-                let x = center.x + terminatorX * radius * cos(angle)
-                path.addLine(to: CGPoint(x: x, y: y))
-            }
-            path.closeSubpath()
-        } else {
-            // Waning: shadow on the RIGHT side
-            // Right arc of the moon
-            for i in 0...steps {
-                let angle = -CGFloat.pi / 2 + CGFloat(i) / CGFloat(steps) * CGFloat.pi
+                let angle = -CGFloat.pi / 2 + t * CGFloat.pi  // -90° to +90°
                 let x = center.x + radius * cos(angle)
                 let y = center.y + radius * sin(angle)
                 if i == 0 { path.move(to: CGPoint(x: x, y: y)) }
                 else { path.addLine(to: CGPoint(x: x, y: y)) }
             }
-            // Terminator
+            // Terminator from bottom back to top (elliptical)
             for i in (0...steps).reversed() {
                 let t = CGFloat(i) / CGFloat(steps)
                 let angle = -CGFloat.pi / 2 + t * CGFloat.pi
                 let y = center.y + radius * sin(angle)
-                let x = center.x - terminatorX * radius * cos(angle)
+                let x = center.x + terminatorFraction * radius * cos(angle)
+                path.addLine(to: CGPoint(x: x, y: y))
+            }
+            path.closeSubpath()
+        } else {
+            // Waning: lit on the LEFT side
+            // Left circular arc from top to bottom
+            for i in 0...steps {
+                let t = CGFloat(i) / CGFloat(steps)
+                let angle = CGFloat.pi / 2 + t * CGFloat.pi  // 90° to 270°
+                let x = center.x + radius * cos(angle)
+                let y = center.y + radius * sin(angle)
+                if i == 0 { path.move(to: CGPoint(x: x, y: y)) }
+                else { path.addLine(to: CGPoint(x: x, y: y)) }
+            }
+            // Terminator from bottom back to top
+            for i in (0...steps).reversed() {
+                let t = CGFloat(i) / CGFloat(steps)
+                let angle = CGFloat.pi / 2 + t * CGFloat.pi
+                let y = center.y + radius * sin(angle)
+                let x = center.x - terminatorFraction * radius * cos(angle)
                 path.addLine(to: CGPoint(x: x, y: y))
             }
             path.closeSubpath()
@@ -122,13 +129,13 @@ struct MoonPhaseView: View {
     /// Draw subtle crater marks for texture.
     private func drawCraters(context: inout GraphicsContext, center: CGPoint, radius: CGFloat) {
         let craters: [(dx: CGFloat, dy: CGFloat, r: CGFloat)] = [
-            (-0.25, -0.15, 0.08),
-            (0.1, -0.3, 0.06),
-            (0.2, 0.15, 0.1),
-            (-0.1, 0.25, 0.05),
-            (0.3, -0.1, 0.04),
-            (-0.3, 0.05, 0.07),
-            (0.05, 0.05, 0.12),
+            (-0.22, -0.18, 0.07),
+            (0.12, -0.32, 0.05),
+            (0.22, 0.12, 0.09),
+            (-0.08, 0.28, 0.04),
+            (0.32, -0.08, 0.035),
+            (-0.28, 0.08, 0.06),
+            (0.04, 0.02, 0.11),
         ]
 
         for crater in craters {
@@ -141,7 +148,7 @@ struct MoonPhaseView: View {
             ))
             context.fill(
                 craterPath,
-                with: .color(.black.opacity(0.08))
+                with: .color(.black.opacity(0.06))
             )
         }
     }
@@ -156,7 +163,6 @@ struct MoonPhaseView: View {
             MoonPhaseView(phase: MoonPhaseCalculator.currentPhase())
                 .frame(width: 120, height: 120)
 
-            // Show a few phases for testing
             HStack(spacing: 16) {
                 ForEach([0.0, 0.125, 0.25, 0.5, 0.75, 0.9], id: \.self) { age in
                     let fakeMoon = MoonPhaseCalculator.phase(for: Date(timeIntervalSince1970: 947182440.0 + age * 29.53059 * 86400))
