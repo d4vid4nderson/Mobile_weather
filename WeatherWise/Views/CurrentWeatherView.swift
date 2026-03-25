@@ -145,29 +145,26 @@ struct CurrentWeatherView: View {
                             .foregroundStyle(Color.onGradientSecondary)
                     }
 
-                    HStack(spacing: 3) {
-                        Image(systemName: "sunrise.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.yellow.opacity(0.8))
-                        Text(viewModel.sunriseString)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.onGradientPrimary)
-
-                        Text("/")
-                            .font(.title3)
-                            .foregroundStyle(Color.onGradientSecondary)
-
-                        Image(systemName: "sunset.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.orange.opacity(0.8))
-                        Text(viewModel.sunsetString)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.onGradientPrimary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "sunrise.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.yellow.opacity(0.8))
+                            Text(viewModel.sunriseString)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color.onGradientPrimary)
+                        }
+                        HStack(spacing: 4) {
+                            Image(systemName: "sunset.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.orange.opacity(0.8))
+                            Text(viewModel.sunsetString)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color.onGradientPrimary)
+                        }
                     }
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
 
                     Text(viewModel.daylightDurationString)
                         .font(.caption)
