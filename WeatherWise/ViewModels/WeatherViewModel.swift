@@ -150,6 +150,47 @@ final class WeatherViewModel: ObservableObject {
         return WeatherIconMapper.sfSymbol(for: weather.id, icon: weather.icon)
     }
 
+    /// Short natural-language outlook built from the next forecast period.
+    var hourlyOutlook: String? {
+        guard let current = currentWeather,
+              let list = forecast?.list else { return nil }
+
+        let now = Date().timeIntervalSince1970
+        guard let next = list.first(where: { Double($0.dt) > now }),
+              let nextCondition = next.weather.first,
+              let currentCondition = current.weather.first else { return nil }
+
+        let nextTemp = Int(convertTemp(next.main.temp).rounded())
+        let currentTemp = Int(convertTemp(current.main.temp).rounded())
+        let unit = temperatureUnit.symbol
+
+        let conditionChanging = nextCondition.main.lowercased() != currentCondition.main.lowercased()
+        let tempDiff = nextTemp - currentTemp
+        let pop = next.pop ?? 0
+
+        var parts: [String] = []
+
+        // Temperature trend
+        if abs(tempDiff) >= 2 {
+            let direction = tempDiff > 0 ? "rising" : "dropping"
+            parts.append("Temps \(direction) to \(nextTemp)\(unit)")
+        } else {
+            parts.append("Holding steady around \(currentTemp)\(unit)")
+        }
+
+        // Condition change
+        if conditionChanging {
+            parts.append("with \(nextCondition.description) expected")
+        }
+
+        // Precipitation chance
+        if pop >= 0.3 {
+            parts.append("\(Int(pop * 100))% chance of rain")
+        }
+
+        return parts.joined(separator: ", ") + "."
+    }
+
     var isDaytime: Bool {
         guard let weather = currentWeather,
               let sunrise = weather.sys.sunrise,
@@ -323,6 +364,20 @@ final class WeatherViewModel: ObservableObject {
                 let date = items.first!.dt.asDate
                 let pop = items.map { $0.pop ?? 0 }.max() ?? 0
 
+                let avgHumidity = items.map(\.main.humidity).reduce(0, +) / max(items.count, 1)
+                let maxWind = items.map(\.wind.speed).max() ?? 0
+                let avgPressure = items.map(\.main.pressure).reduce(0, +) / max(items.count, 1)
+                let avgVis = items.compactMap(\.visibility).map(Double.init).reduce(0, +) / max(Double(items.compactMap(\.visibility).count), 1)
+
+                let outlook = Self.buildDailyOutlook(
+                    description: weather.description,
+                    highTemp: highTemp,
+                    lowTemp: lowTemp,
+                    pop: pop,
+                    humidity: avgHumidity,
+                    windSpeed: maxWind
+                )
+
                 return DailyForecast(
                     date: date,
                     highTemp: highTemp,
@@ -330,9 +385,45 @@ final class WeatherViewModel: ObservableObject {
                     conditionId: weather.id,
                     conditionIcon: weather.icon,
                     conditionDescription: weather.description,
-                    pop: pop
+                    pop: pop,
+                    avgHumidity: avgHumidity,
+                    maxWindSpeed: maxWind,
+                    avgPressure: avgPressure,
+                    avgVisibility: avgVis,
+                    outlook: outlook
                 )
             }
+    }
+
+    private static func buildDailyOutlook(
+        description: String,
+        highTemp: Double,
+        lowTemp: Double,
+        pop: Double,
+        humidity: Int,
+        windSpeed: Double
+    ) -> String {
+        var parts: [String] = []
+
+        parts.append("Expect \(description)")
+
+        if pop >= 0.3 {
+            parts.append("with a \(Int(pop * 100))% chance of precipitation")
+        }
+
+        if windSpeed > 15 {
+            parts.append("Winds could gust up to \(Int(windSpeed.rounded())) mph")
+        } else if windSpeed > 8 {
+            parts.append("Breezy conditions with winds around \(Int(windSpeed.rounded())) mph")
+        } else {
+            parts.append("Light winds around \(Int(windSpeed.rounded())) mph")
+        }
+
+        if humidity > 75 {
+            parts.append("High humidity at \(humidity)%")
+        }
+
+        return parts.joined(separator: ". ") + "."
     }
 
     var airQualityIndex: Int? {
@@ -829,4 +920,9 @@ struct DailyForecast: Identifiable {
     let conditionIcon: String
     let conditionDescription: String
     let pop: Double
+    let avgHumidity: Int
+    let maxWindSpeed: Double
+    let avgPressure: Int
+    let avgVisibility: Double // meters
+    let outlook: String
 }

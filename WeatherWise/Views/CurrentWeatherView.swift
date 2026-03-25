@@ -17,7 +17,11 @@ struct CurrentWeatherView: View {
                 .padding(.bottom, 24)
 
             tempRangeSection
-                .padding(.bottom, 32)
+                .padding(.bottom, 12)
+
+            outlookSection
+                .padding(.horizontal, 40)
+                .padding(.bottom, 28)
 
             detailsGrid
                 .padding(.horizontal, 20)
@@ -87,6 +91,19 @@ struct CurrentWeatherView: View {
                 .foregroundStyle(Color.onGradientSecondary)
         }
         .foregroundStyle(Color.onGradientPrimary)
+    }
+
+    // MARK: - Outlook
+
+    @ViewBuilder
+    private var outlookSection: some View {
+        if let outlook = viewModel.hourlyOutlook {
+            Text(outlook)
+                .font(.subheadline)
+                .foregroundStyle(Color.onGradientSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+        }
     }
 
     // MARK: - Details Grid

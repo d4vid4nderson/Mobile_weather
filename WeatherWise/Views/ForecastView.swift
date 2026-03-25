@@ -3,6 +3,7 @@ import SwiftUI
 struct ForecastView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
     @State private var selectedDayRange: ForecastRange = .fiveDay
+    @State private var expandedDayId: UUID?
 
     enum ForecastRange: String, CaseIterable {
         case fiveDay = "5-Day"
@@ -264,53 +265,118 @@ struct ForecastView: View {
     private func dailyRow(_ day: DailyForecast) -> some View {
         let timezone = viewModel.forecast?.city.timezone ?? 0
         let icon = WeatherIconMapper.sfSymbol(for: day.conditionId, icon: day.conditionIcon)
+        let isExpanded = expandedDayId == day.id
 
-        return HStack {
-            Text(day.date.formattedShortDay(timezoneOffset: timezone))
-                .font(.body)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.onGradientPrimary)
-                .frame(width: 50, alignment: .leading)
-
-            if day.pop > 0.1 {
-                HStack(spacing: 2) {
-                    Image(systemName: "drop.fill")
-                        .font(.system(size: 10))
-                    Text("\(Int(day.pop * 100))%")
-                        .font(.caption)
+        return VStack(spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    expandedDayId = isExpanded ? nil : day.id
                 }
-                .foregroundStyle(Color.accentRain)
-                .frame(width: 50)
-            } else {
-                Spacer()
-                    .frame(width: 50)
+            } label: {
+                HStack {
+                    Text(day.date.formattedShortDay(timezoneOffset: timezone))
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.onGradientPrimary)
+                        .frame(width: 50, alignment: .leading)
+
+                    if day.pop > 0.1 {
+                        HStack(spacing: 2) {
+                            Image(systemName: "drop.fill")
+                                .font(.system(size: 10))
+                            Text("\(Int(day.pop * 100))%")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(Color.accentRain)
+                        .frame(width: 50)
+                    } else {
+                        Spacer()
+                            .frame(width: 50)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: icon)
+                        .font(.title3)
+                        .symbolRenderingMode(.multicolor)
+                        .frame(width: 35)
+
+                    Spacer()
+
+                    HStack(spacing: 8) {
+                        Text("\(Int(viewModel.convertTemp(day.lowTemp).rounded()))°")
+                            .font(.body)
+                            .foregroundStyle(Color.onGradientSecondary)
+                            .frame(width: 35, alignment: .trailing)
+
+                        temperatureBar(low: day.lowTemp, high: day.highTemp)
+                            .frame(width: 60, height: 4)
+
+                        Text("\(Int(viewModel.convertTemp(day.highTemp).rounded()))°")
+                            .font(.body)
+                            .foregroundStyle(Color.onGradientPrimary)
+                            .frame(width: 35, alignment: .leading)
+                    }
+                }
+                .padding(.vertical, 10)
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
 
-            Spacer()
-
-            Image(systemName: icon)
-                .font(.title3)
-                .symbolRenderingMode(.multicolor)
-                .frame(width: 35)
-
-            Spacer()
-
-            HStack(spacing: 8) {
-                Text("\(Int(viewModel.convertTemp(day.lowTemp).rounded()))°")
-                    .font(.body)
-                    .foregroundStyle(Color.onGradientSecondary)
-                    .frame(width: 35, alignment: .trailing)
-
-                temperatureBar(low: day.lowTemp, high: day.highTemp)
-                    .frame(width: 60, height: 4)
-
-                Text("\(Int(viewModel.convertTemp(day.highTemp).rounded()))°")
-                    .font(.body)
-                    .foregroundStyle(Color.onGradientPrimary)
-                    .frame(width: 35, alignment: .leading)
+            if isExpanded {
+                dailyDetailView(day)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding(.vertical, 10)
+    }
+
+    private func dailyDetailView(_ day: DailyForecast) -> some View {
+        let visMiles = day.avgVisibility / 1609.34
+
+        return VStack(alignment: .leading, spacing: 12) {
+            // Outlook paragraph
+            Text(day.outlook)
+                .font(.subheadline)
+                .foregroundStyle(Color.onGradientSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            // Detail stats grid
+            LazyVGrid(columns: [
+                GridItem(.flexible(), spacing: 12),
+                GridItem(.flexible(), spacing: 12)
+            ], spacing: 10) {
+                detailStat(icon: "humidity.fill", label: "Humidity", value: "\(day.avgHumidity)%")
+                detailStat(icon: "wind", label: "Wind", value: String(format: "%.0f mph", day.maxWindSpeed))
+                detailStat(icon: "gauge.medium", label: "Pressure", value: "\(day.avgPressure) hPa")
+                detailStat(icon: "eye.fill", label: "Visibility", value: String(format: "%.1f mi", visMiles))
+            }
+        }
+        .padding(.top, 4)
+        .padding(.bottom, 12)
+    }
+
+    private func detailStat(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(Color.onGradientSecondary)
+                .frame(width: 16)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(label)
+                    .font(.system(size: 10))
+                    .foregroundStyle(Color.onGradientSecondary)
+                Text(value)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.onGradientPrimary)
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 10)
+        .background(Color.onGradientPrimary.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
     }
 
     private func temperatureBar(low: Double, high: Double) -> some View {
