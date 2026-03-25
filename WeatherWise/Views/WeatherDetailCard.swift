@@ -32,7 +32,7 @@ struct WeatherDetailCard: View {
                     .foregroundStyle(Color.onGradientSecondary)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(16)
         .background {
             RoundedRectangle(cornerRadius: 16)
