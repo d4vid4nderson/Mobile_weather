@@ -114,11 +114,14 @@ struct WeatherGradients {
     static func background(for conditionId: Int, isDaytime: Bool, darkMode: Bool = false) -> LinearGradient {
         let colors: [Color]
 
-        if !isDaytime {
+        if darkMode {
+            // Dark mode: neutral gray for both day and night
+            colors = darkModeGrayColors()
+        } else if !isDaytime {
+            // Light mode night: blue-tinted dark tones
             colors = nightColors(for: conditionId)
-        } else if darkMode {
-            colors = dayDarkModeColors(for: conditionId)
         } else {
+            // Light mode day: vivid blue gradients
             colors = dayColors(for: conditionId)
         }
 
@@ -153,28 +156,13 @@ struct WeatherGradients {
         }
     }
 
-    // MARK: - Dark mode day gradients (deeper, moodier versions)
-    private static func dayDarkModeColors(for conditionId: Int) -> [Color] {
-        switch conditionId {
-        case 200...232: // Thunderstorm
-            return [Color(red: 0.08, green: 0.05, blue: 0.15), Color(red: 0.14, green: 0.08, blue: 0.25), Color(red: 0.06, green: 0.04, blue: 0.12)]
-        case 300...321: // Drizzle
-            return [Color(red: 0.18, green: 0.24, blue: 0.32), Color(red: 0.14, green: 0.20, blue: 0.30), Color(red: 0.12, green: 0.18, blue: 0.28)]
-        case 500...531: // Rain
-            return [Color(red: 0.10, green: 0.13, blue: 0.24), Color(red: 0.13, green: 0.16, blue: 0.30), Color(red: 0.08, green: 0.10, blue: 0.20)]
-        case 600...622: // Snow
-            return [Color(red: 0.30, green: 0.33, blue: 0.48), Color(red: 0.24, green: 0.27, blue: 0.42), Color(red: 0.20, green: 0.22, blue: 0.36)]
-        case 700...781: // Atmosphere
-            return [Color(red: 0.24, green: 0.24, blue: 0.30), Color(red: 0.20, green: 0.22, blue: 0.28), Color(red: 0.16, green: 0.18, blue: 0.24)]
-        case 800: // Clear
-            return [Color(red: 0.04, green: 0.18, blue: 0.52), Color(red: 0.06, green: 0.24, blue: 0.50), Color(red: 0.10, green: 0.30, blue: 0.55)]
-        case 801...802: // Few/Scattered Clouds
-            return [Color(red: 0.12, green: 0.24, blue: 0.44), Color(red: 0.18, green: 0.26, blue: 0.38), Color(red: 0.14, green: 0.24, blue: 0.38)]
-        case 803...804: // Broken/Overcast Clouds
-            return [Color(red: 0.18, green: 0.20, blue: 0.28), Color(red: 0.22, green: 0.24, blue: 0.32), Color(red: 0.16, green: 0.18, blue: 0.26)]
-        default:
-            return [Color(red: 0.06, green: 0.16, blue: 0.40), .weatherDarkBlue]
-        }
+    // MARK: - Dark mode: neutral gray matching Settings/Alerts screens
+    private static func darkModeGrayColors() -> [Color] {
+        return [
+            Color(red: 0.10, green: 0.10, blue: 0.11),
+            Color(red: 0.13, green: 0.13, blue: 0.14),
+            Color(red: 0.10, green: 0.10, blue: 0.11)
+        ]
     }
 
     private static func nightColors(for conditionId: Int) -> [Color] {
